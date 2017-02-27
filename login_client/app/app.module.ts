@@ -4,6 +4,7 @@
 import {NgModule} from "@angular/core";
 import {AppComponent} from "./app.component";
 import {BrowserModule} from "@angular/platform-browser";
+import {MaterialModule } from '@angular/material';
 import {NFCLoginModule} from './login/login.module';
 
 @NgModule({
@@ -12,7 +13,8 @@ import {NFCLoginModule} from './login/login.module';
     bootstrap   :[AppComponent],
     imports     :[
         BrowserModule,
-        NFCLoginModule
+        NFCLoginModule,
+        MaterialModule
     ],
     exports     :[]
 })

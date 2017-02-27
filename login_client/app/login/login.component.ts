@@ -4,12 +4,11 @@
 import {Component} from "@angular/core";
 
 @Component({
+    moduleId: module.id,
     selector: 'nfc-login',
-    template : `
-    <div>
-        <h1>Hello {{name}}</h1>  
-    </div>
-`})
+    templateUrl: './assets/login.component.html',
+    styleUrls: ['./assets/login.component.css']
+})
 export class NFCLoginComponent{
     name:string = "NFC Login"
 
