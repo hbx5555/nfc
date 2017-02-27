@@ -5,6 +5,7 @@ import {Component} from "@angular/core";
     template : `
     <div>
         <h1>Hello {{name}}</h1>  
+        <nfc-login></nfc-login>
     </div>
 `})
 export class AppComponent{
