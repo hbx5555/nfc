@@ -11,12 +11,13 @@
             <span id="reauth-email" class="reauth-email"></span>
             <input type="email" id="inputEmail" class="form-control" [(ngModel)]="uname" name="first" placeholder="Email address" required autofocus>
             <button *ngIf="!submitted" class="btn btn-lg btn-primary btn-block btn-signin" (click)="onSubmitClicked();" type="submit">Sign in</button>
-            <button *ngIf="submitted" class="btn btn-primary btn-lg btn-waiting"><i class="fa fa-refresh fa-spin"></i> Waiting to pass credit card...</button>
+            <button *ngIf="loginResponse" class="btn btn-lg btn-primary btn-block btn-signin" (click)="onPassedClicked();" type="submit">Enter Account</button>
+            <button *ngIf="submitted && !loginResponse" class="btn btn-primary btn-lg btn-waiting"><i class="fa fa-refresh fa-spin"></i> Waiting to pass credit card...</button>
         </form><!-- /form -->
 
 
     </div><!-- /card-container -->
 </div><!-- /container -->
-<pre *ngIf="submitted">
-    {{uname}} has been submitted!
+<pre *ngIf="loginResponse">
+    {{loginResponse | json}}
 </pre>

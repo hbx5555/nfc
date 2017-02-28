@@ -6,10 +6,11 @@ import {AppComponent} from "./app.component";
 import {BrowserModule} from "@angular/platform-browser";
 import {MaterialModule } from '@angular/material';
 import {NFCLoginModule} from './login/login.module';
+import {WebSocketService} from './services/websocket.service';
 
 @NgModule({
     declarations:[AppComponent],
-    providers   :[],
+    providers   :[WebSocketService],
     bootstrap   :[AppComponent],
     imports     :[
         BrowserModule,
