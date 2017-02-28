@@ -11,5 +11,12 @@ import {Component} from "@angular/core";
 })
 export class NFCLoginComponent{
     name:string = "NFC Login"
+    uname:string = "";
+    submitted: boolean = false;
+    btnStatus: string = 'Sign in';
 
+    onSubmitClicked(): void {
+        this.submitted = true;
+        this.btnStatus = 'Waiting to pass credit card...'
+    }
 }
