@@ -11,7 +11,7 @@
     "typeRoots": [
       "./node_modules/@types"
     ],
-    "outDir": "./compiled/",
+    "outDir": "./build/",
     "types" : [
       "core-js",
       "node"

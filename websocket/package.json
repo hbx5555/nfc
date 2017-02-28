@@ -3,5 +3,9 @@
   "version": "0.0.1",
   "dependencies": {
     "nodejs-websocket": "^1.7.1"
+  },
+  "devDependencies": {
+    "@types/node": "^7.0.5",
+    "typescript": "^2.2.1"
   }
 }
