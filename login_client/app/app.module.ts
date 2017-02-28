@@ -4,13 +4,17 @@
 import {NgModule} from "@angular/core";
 import {AppComponent} from "./app.component";
 import {BrowserModule} from "@angular/platform-browser";
+import {MaterialModule } from '@angular/material';
+import {NFCLoginModule} from './login/login.module';
 
 @NgModule({
     declarations:[AppComponent],
     providers   :[],
     bootstrap   :[AppComponent],
     imports     :[
-        BrowserModule
+        BrowserModule,
+        NFCLoginModule,
+        MaterialModule
     ],
     exports     :[]
 })
