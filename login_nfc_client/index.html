@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="main.css" rel="stylesheet">
+    <script src="kcl.min.js"></script>
+</head>
+<body>
+<!--
+    you can substitue the span of reauth email for a input with the email and
+    include the remember me checkbox
+    -->
+<div class="container">
+    <div class="card card-container">
+        <!-- <img class="profile-img-card" src="//lh3.googleusercontent.com/-6V8xOA6M7BA/AAAAAAAAAAI/AAAAAAAAAAA/rzlHcD0KYwo/photo.jpg?sz=120" alt="" /> -->
+        <img id="profile-img" class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
+        <p id="profile-name" class="profile-name-card"></p>
+        <form class="form-signin">
+            <span id="reauth-email" class="reauth-email"></span>
+            <input type="email" id="inputEmail" class="form-control" name="first" placeholder="Email address" required autofocus>
+            <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Sign in</button>
+            <button  class="btn btn-lg btn-primary btn-block btn-signin"  type="submit">Enter Account</button>
+            <button  class="btn btn-primary btn-lg btn-waiting"><i class="fa fa-refresh fa-spin"></i> Waiting to pass credit card...</button>
+        </form><!-- /form -->
+    </div><!-- /card-container -->
+</div><!-- /container -->
+
+</body>
+<script>
+
+</script>
+</html>
