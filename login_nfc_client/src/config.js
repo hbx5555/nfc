@@ -1,11 +1,26 @@
 /**
  * Created by andreyna on 3/26/2017.
  */
-class KCLConfig {
+// class KCLConfig {
+//
+//     constructor() {
+//
+//     }
+// }
+//
+// export default new KCLConfig();
 
-    constructor() {
-        
+const config = {
+    endpoints: {
+        localProxy: {
+            protocol: 'http',
+            host: 'localhost',
+            port: '8888',
+            apiCalls: {
+                getUUID: 'uuid'
+            }
+        }
     }
 }
 
-export default new KCLConfig();
+export {config};

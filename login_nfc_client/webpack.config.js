@@ -6,11 +6,12 @@ const webpack = require('webpack');
 const PATH_BASE = path.resolve(__dirname);
 
 const devConfig = {
-    entry: path.resolve(PATH_BASE, 'src/kcl_core.js'),
+    entry: path.resolve(PATH_BASE, 'src/kcl.js'),
     output: {
         path: path.resolve(PATH_BASE, 'dist/js'),
         filename: 'kcl.min.js',
         library: 'kcl',
+        libraryTarget: 'umd',
         pathinfo: false
     },
     debug: true,
@@ -20,7 +21,7 @@ const devConfig = {
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                loader: 'babel?presets[]=es2015'
+                loader: 'babel'
             },
             {
                 test: /\.scss$/,

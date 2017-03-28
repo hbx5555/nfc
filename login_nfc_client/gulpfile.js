@@ -26,27 +26,10 @@ const compiledJS = 'src';
 const bundle = 'kcp.js';
 
 
-gulp.task('webpack:dev', callback => {
-    let cfg = Object.create(webpackConfig);
-    new WebpackDevServer(webpack(cfg))
-       .listen(8082, "localhost", function(err) {
-           if (err) throw new gutil.PluginError("webpack-dev-server", err);
-                gutil.log("[webpack-dev-server]", "http://localhost:8082/webpack-dev-server/index.html");
 
-       });
-    // run webpack
-    // webpack(cfg, function(err, stats) {
-    //     if (err) throw new gutil.PluginError('webpack', err);
-    //     gutil.log('[webpack]', stats.toString({
-    //         colors: true,
-    //         progress: true
-    //     }));
-    //     callback();
-    // });
-});
 
 gulp.task('styles', () => {
-    return gulp.src('src/**/*.scss')
+    return gulp.src('src/scss/**/*.scss')
         .pipe(plumber({
             errorHandler: notify.onError(err => ({
                 title:   'Styles',
@@ -61,7 +44,7 @@ gulp.task('styles', () => {
 });
 
 gulp.task('assets', () => {
-    return gulp.src('src/**/*.{css,html}')
+    return gulp.src('src/scss/**/*.{css,html}')
         .pipe(gulp.dest(buildFolder));
 });
 
@@ -108,9 +91,9 @@ gulp.task('build', gulp.series(
 );
 
 gulp.task('watch', () => {
-    //gulp.watch('src/styles/**/*.*', gulp.series('styles'));
-    gulp.watch('compiled/**/*.*', gulp.series('scripts'));
-    gulp.watch('src/**/*.{html,css}', gulp.series('assets'));
+    gulp.watch('src/scss/**/*.*', gulp.series('styles'));
+    //gulp.watch('compiled/**/*.*', gulp.series('scripts'));
+    //gulp.watch('src/**/*.{html,css}', gulp.series('assets'));
 });
 
 gulp.task('serve', () => {
@@ -121,3 +104,30 @@ gulp.task('serve', () => {
 gulp.task('dev',
     gulp.series('build',
         gulp.parallel('watch', 'serve')));
+
+gulp.task('webpack:dev', (callback) => {
+    let cfg = Object.create(webpackConfig);
+    new WebpackDevServer(webpack(cfg))
+        .listen(8082, "localhost", function(err) {
+            if (err) throw new gutil.PluginError("webpack-dev-server", err);
+            gutil.log("[webpack-dev-server]", "http://localhost:8082/webpack-dev-server/index.html");
+
+        });
+    // run webpack
+    // webpack(cfg, function(err, stats) {
+    //     if (err) throw new gutil.PluginError('webpack', err);
+    //     gutil.log('[webpack]', stats.toString({
+    //         colors: true,
+    //         progress: true
+    //     }));
+    //     callback();
+    // });
+});
+
+gulp.task('build:dev', gulp.series(
+    'clean',
+    gulp.parallel('styles', 'webpack:dev')) //from version 4.0
+)
+
+
+//gulp.task('dev:test', gulp.series('build:dev', gulp.parallel('watch', 'serve')));
