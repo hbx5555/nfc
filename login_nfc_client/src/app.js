@@ -4,30 +4,36 @@
 import LoginManager from './services/login_manager';
 import Fingerprint from 'fingerprintjs';
 import LoginComponent from './components/login_component';
+import {events, errors} from './config';
+import PubSub from 'pubsub-js';
+import CommunicationService from './services/communication_service';
 
 class APP {
 
     _components = {};
     constructor() {
-        this._loginManager = LoginManager.instance;
-        this._fingerprint = new Fingerprint();
     }
 
     startApp() {
-        this._components['LoginComponent'] = new LoginComponent();
+        this._subscribe();
+        CommunicationService.instance.initCommunication();
+    }
 
-        Object.keys(this._components).forEach((key) => {
-            this._components[key].start('.app-container');
+
+    _subscribe() {
+        this._components['LoginComponent'] = new LoginComponent();
+        PubSub.subscribe(events.WS_CONNECTED, () => {
+            debugger;
+            this._components['LoginComponent'].start('.app-container', 200);
+            PubSub.unsubscribe(events.WS_FAILED);
+        });
+
+
+        PubSub.subscribe(events.WS_FAILED, () => {
+            this._components['LoginComponent'].start('.app-container', errors.COMMUNICATION_FAILED);
         });
     }
-    
-    // getAPI() {
-    //     return this._loginManager.getManager();
-    // }
-    //
-    // getFingerprint() {
-    //     return this._fingerprint.get();
-    // }
+
 }
 
 export default APP;

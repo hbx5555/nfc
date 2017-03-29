@@ -164,6 +164,13 @@ $break-small: 760px;
       padding-left: 15px;
       padding-right: 15px;
     }
+
+    .kcl-login-content-error {
+      font-size: 32px;
+      padding: 10px;
+      text-align: center;
+      color: red;
+    }
     width: 500px;
     background: aliceblue;
   }
