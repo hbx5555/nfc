@@ -44,8 +44,8 @@ gulp.task('styles', () => {
 });
 
 gulp.task('assets', () => {
-    return gulp.src('src/scss/**/*.{css,html}')
-        .pipe(gulp.dest(buildFolder));
+    return gulp.src('src/assets/**/*.*')
+        .pipe(gulp.dest(buildFolder + '/assets'));
 });
 
 gulp.task('scripts', () => {
@@ -126,7 +126,7 @@ gulp.task('webpack:dev', (callback) => {
 
 gulp.task('build:dev', gulp.series(
     'clean',
-    gulp.parallel('styles', 'webpack:dev')) //from version 4.0
+    gulp.parallel('styles', 'assets', 'webpack:dev')) //from version 4.0
 )
 
 

@@ -17,7 +17,23 @@
     <div class="kcl-login-wrapper">
         <div class="kcl-login-content">
             <img id="profile-img" class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
-            <button class="btn btn-lg btn-primary btn-block btn-signin" id="testBtn" type="button">GET UUID</button>
+            <!--<button class="btn btn-lg btn-primary btn-block btn-signin" id="testBtn" type="button">GET UUID</button>-->
+            <div id="preloader" class="hide">
+                <div>
+                    <div id="kcp-action-name">Identify user</div>
+                </div>
+                <img src="/../../dist/assets/ellipsis-new.gif"/>
+            </div>
+            <div id="pinContainer" class="hide">
+                <div>
+                    We can't strongly identify you. Please pass your card and type the following PIN code
+                </div>
+                <input disabled type="text" maxlength=1 id="1" />
+                <input disabled type="text" maxlength=1 id="a" />
+                <input disabled type="text" maxlength=1 id="b" />
+                <input disabled type="text" maxlength=1 id="c" />
+            </div>
+            <p id="resultTest"></p>
         </div>
     </div>
 </div>
