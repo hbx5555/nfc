@@ -6,6 +6,7 @@ import KCLSingleton from '../base/kcl_singleton';
 import QueryStringParser from 'query-string-parser';
 import {config} from '../config';
 import PubSub from 'pubsub-js';
+import LoginController from '../components/login_controller';
 
 class LoginManager extends KCLSingleton {
 
@@ -14,11 +15,28 @@ class LoginManager extends KCLSingleton {
     _clientId;
     _isValidRequest;
     _isCommunicationError = false;
+    _loginController;
 
     constructor() {
       super();
-      this._parseQueryParams();
+      
       this._subscribe();
+    }
+
+    startLogin() {
+        this._loginController = new LoginController();
+        this._loginController.start(config.uiContainer);
+        let isValidParams = this._parseQueryParams();
+        if (false === isValidParams) {
+            this._loginController.handleError('Invalid query parameters');
+        }
+        
+        this._getLoginRequestID();
+    }
+
+    _getLoginRequestID() {
+        this._loginController.showLoading(true, 'Sending login request...');
+        CommunicationService.instance.login(this._clientId);
     }
 
 
@@ -27,13 +45,13 @@ class LoginManager extends KCLSingleton {
      * @private
      */
     _parseQueryParams() {
+        let isValid = false;
         let qs = QueryStringParser.fromQuery(window.location.search.slice(1));
         if (qs && qs.clientId) {
             this._clientId = qs.clientId;
-            this._isValidRequest = true;
-        } else {
-           this._isValidRequest = false;
+            isValid = true;
         }
+        return isValid;
     }
 
 

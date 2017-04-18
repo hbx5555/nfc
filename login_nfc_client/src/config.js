@@ -13,6 +13,7 @@ const errors = {
 }
 
 const config = {
+    uiContainer: '.app-container',
     kcpTokenName: 'kcp_token',
     endpoints: {
         localProxy: {
@@ -21,6 +22,17 @@ const config = {
             port: '8888',
             apiCalls: {
                 getUUID: 'uuid'
+            }
+        },
+        restServer: {
+            protocol: 'http',
+            host: 'kcl.com',
+            port: '80',
+            apiCalls: {
+                login: {
+                    path: 'login',
+                    method: 'post'
+                }
             }
         },
         remoteSocket: {

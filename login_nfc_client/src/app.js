@@ -16,22 +16,26 @@ class APP {
 
     startApp() {
         this._subscribe();
-        CommunicationService.instance.initCommunication();
+       // CommunicationService.instance.initCommunication();
     }
 
 
     _subscribe() {
-        this._components['LoginComponent'] = new LoginComponent();
-        PubSub.subscribe(events.WS_CONNECTED, () => {
-            debugger;
-            this._components['LoginComponent'].start('.app-container', 200);
-            PubSub.unsubscribe(events.WS_FAILED);
-        });
+        //this._components['LoginComponent'] = new LoginComponent();
+       // this._components['LoginComponent'].start('.app-container', 200);
+       // this._components['LoginComponent'] = new LoginComponent();
+        //this._components['LoginComponent'].start('.app-container');
+        LoginManager.instance.startLogin();
+        // PubSub.subscribe(events.WS_CONNECTED, () => {
+        //     debugger;
+        //     this._components['LoginComponent'].start('.app-container', 200);
+        //     PubSub.unsubscribe(events.WS_FAILED);
+        // });
 
 
-        PubSub.subscribe(events.WS_FAILED, () => {
-            this._components['LoginComponent'].start('.app-container', errors.COMMUNICATION_FAILED);
-        });
+        // PubSub.subscribe(events.WS_FAILED, () => {
+        //     this._components['LoginComponent'].start('.app-container', errors.COMMUNICATION_FAILED);
+        // });
     }
 
 }

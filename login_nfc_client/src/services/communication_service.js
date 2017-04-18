@@ -15,17 +15,20 @@ class CommunicationService extends KCLSingleton {
 
     constructor() {
         super();
+        this._initCommunicationClients();
     }
 
     _initCommunicationClients() {
-        this._restClient = new RestClient(this._createUrl(config.endpoints.localProxy));
-        //this._restClient = new RestClient('https://httpbin.org');
-        this._restClient.res('get');
-        Object.keys(config.endpoints.localProxy.apiCalls).forEach((key) => {
-            this._restClient.res(config.endpoints.localProxy.apiCalls[key]); //getUUID
-        });
+        this._restClient = new RestClient(this._createUrl(config.endpoints.restServer));
+        this._restClient.res(config.endpoints.restServer.apiCalls.login.path); //login
 
-        this._initWebSocketClient();
+        // //this._restClient = new RestClient('https://httpbin.org');
+        // this._restClient.res('get');
+        // Object.keys(config.endpoints.restServer.apiCalls).forEach((key) => {
+        //     this._restClient.res(config.endpoints.localProxy.apiCalls[key]); //getUUID
+        // });
+
+        //this._initWebSocketClient();
     }
 
     _initWebSocketClient() {
@@ -53,6 +56,11 @@ class CommunicationService extends KCLSingleton {
 
     _onWSClose() {
         console.log('WS close connection');
+    }
+
+
+    login(clientId) {
+        return this._restClient.login.get({clientId: clientId});
     }
 
     getUUID() {

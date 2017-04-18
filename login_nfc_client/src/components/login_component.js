@@ -14,6 +14,7 @@ class LoginComponent {
 
     start(container, status) {
         $(container).append(loginView);
+
         if (status === errors.COMMUNICATION_FAILED) {
             $('.kcl-login-content-error').toggleClass('hide');
         } else {

@@ -159,10 +159,13 @@ $break-small: 760px;
       height: 100%;
     }
     .kcl-login-content {
-      padding-top: 25px;
-      padding-bottom: 15px;
-      padding-left: 15px;
-      padding-right: 15px;
+      //padding-top: 25px;
+      //padding-bottom: 15px;
+      //padding-left: 15px;
+      //padding-right: 15px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
     }
 
     .kcl-login-content-error {
@@ -171,8 +174,15 @@ $break-small: 760px;
       text-align: center;
       color: red;
     }
+    //background-image: url('assets/backgroundcc.png');
+    background-color: whitesmoke;
+    background-repeat: no-repeat;
+    height: 500px;
+    background-position: center;
     width: 500px;
-    background: aliceblue;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
 
