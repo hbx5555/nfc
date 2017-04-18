@@ -4,7 +4,7 @@
 import CommunicationService from './communication_service';
 import KCLSingleton from '../base/kcl_singleton';
 import QueryStringParser from 'query-string-parser';
-import {config} from '../config';
+import {config, events} from '../config';
 import PubSub from 'pubsub-js';
 import LoginController from '../components/login_controller';
 
@@ -36,7 +36,33 @@ class LoginManager extends KCLSingleton {
 
     _getLoginRequestID() {
         this._loginController.showLoading(true, 'Sending login request...');
-        CommunicationService.instance.login(this._clientId);
+        CommunicationService.instance.login(this._clientId)
+            .then((res) => {
+                this._loginController.showLoading(false);
+                this._handleRequestIdResponse(res);
+            })
+            .catch((error) => {
+                this._loginController.showLoading(false);
+                //TODO remove
+                let res = {
+                    pin: '8597',
+                    requestId: 'myrequest888'
+                }
+                this._handleRequestIdResponse(res);
+
+                //TODO uncomment the following
+                // console.log('LoginManager - failed to retrieve requestId');
+                // this._loginController.showLoading(false);
+                // this._loginController.handleError('Failed to retrieve requestId');
+            })
+    }
+
+
+    _handleRequestIdResponse(res) {
+        this._requestId = res.requestId;
+        this._pin = res.pin;
+        CommunicationService.instance.openWebSocketClient(this._requestId);
+
     }
 
 
@@ -129,10 +155,17 @@ class LoginManager extends KCLSingleton {
 
 
     _subscribe(){
-        // PubSub.subscribe('WS_FAILED', () => {
-        //     this._isCommunicationError = true;
-        //     console.log('LogginManager onconnected to WS');
-        // });
+        PubSub.subscribe(events.WS_FAILED, () => {
+            console.log('LogginManager onconnected to WS');
+            this._loginController.handleError('Failed to open web socket')
+        });
+        PubSub.subscribe(events.WS_CONNECTED, () => {
+            console.log('LogginManager onconnected to WS');
+            if (this._pin) {
+                this._loginController.displayCardPass('Please pass your card...', this._pin);
+            }
+
+        });
     }
     
     

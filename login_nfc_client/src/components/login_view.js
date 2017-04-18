@@ -5,6 +5,7 @@ let loginView = require('./view/login_dialog.html');
 let loginContainer = require('./view/login_container.html');
 let loginErrorView = require('./view/login_error.html');
 let loginPreloader = require('./view/login_preloader.html');
+let loginPinView = require('./view/login_pin.html');
 
 import $ from "jquery";
 
@@ -35,6 +36,27 @@ class LoginView {
         } else {
             this._removeView('#preloader');
         }
+    }
+
+    displayPin(pin) {
+        this._injectView(loginPinView);
+        let inputs = $('#pinContainer input');
+        this._pinPresenter = {
+            inputs: inputs,
+            pin: pin,
+            index: 0
+        };
+
+        this._pinInterval = setInterval(() => {
+            let i = this._pinPresenter.index;
+            if (i >= this._pinPresenter.pin.length) {
+                clearInterval(this._pinInterval);
+                return;
+            }
+            this._pinPresenter.inputs[i].value = this._pinPresenter.pin[i];
+            this._pinPresenter.index++;
+
+        }, 500);
     }
 
     _removeView(viewSelector) {

@@ -25,6 +25,14 @@ class LoginController {
     showLoading(isShown, content) {
         this._loginView.displayLoading(isShown, content);
     }
+    
+    displayCardPass(title, pin) {
+        if (pin) {
+            this._loginView.displayPin(pin);
+        }  else {
+            this._loginView.displayLoading(true, title);
+        }
+    }
 }
 
 

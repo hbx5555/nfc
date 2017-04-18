@@ -31,8 +31,8 @@ class CommunicationService extends KCLSingleton {
         //this._initWebSocketClient();
     }
 
-    _initWebSocketClient() {
-        this._webSocketClient = new WebSocket(this._createUrl(config.endpoints.remoteSocket) /*+ '/' + config.endpoints.remoteSocket.apiCalls.auth*/);
+    openWebSocketClient(channel) {
+        this._webSocketClient = new WebSocket(this._createUrl(config.endpoints.remoteSocket) + '/' + channel);
         this._webSocketClient.onopen = this._onWSOpen.bind(this);
         this._webSocketClient.onmessage = this._onWSMessage.bind(this);
         this._webSocketClient.onerror = this._onWSError.bind(this);
