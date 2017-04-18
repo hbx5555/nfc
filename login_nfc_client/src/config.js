@@ -26,8 +26,8 @@ const config = {
         },
         restServer: {
             protocol: 'http',
-            host: 'kcl.com',
-            port: '80',
+            host: 'localhost',
+            port: '57577',
             apiCalls: {
                 login: {
                     path: 'login',

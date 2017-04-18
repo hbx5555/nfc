@@ -29,6 +29,7 @@ class LoginManager extends KCLSingleton {
         let isValidParams = this._parseQueryParams();
         if (false === isValidParams) {
             this._loginController.handleError('Invalid query parameters');
+            return;
         }
         
         this._getLoginRequestID();
@@ -38,6 +39,7 @@ class LoginManager extends KCLSingleton {
         this._loginController.showLoading(true, 'Sending login request...');
         CommunicationService.instance.login(this._clientId)
             .then((res) => {
+                debugger;
                 this._loginController.showLoading(false);
                 this._handleRequestIdResponse(res);
             })
@@ -45,7 +47,7 @@ class LoginManager extends KCLSingleton {
                 this._loginController.showLoading(false);
                 //TODO remove
                 let res = {
-                    pin: '8597',
+//                    pin: '8597',
                     requestId: 'myrequest888'
                 }
                 this._handleRequestIdResponse(res);
@@ -82,67 +84,6 @@ class LoginManager extends KCLSingleton {
 
 
     /**
-     * Get user identifier. First of all we try to get existed token from local storage.
-     * If it doesn't exist, the fallback is to try request UUID from proxy server that should be installed in case the user is
-     * logging in from mobile device has KCL application
-     */
-    getIdentifier() {
-        return new Promise((resolve, reject) => {
-            // if (false === this._isValidRequest) {
-            //   //TODO
-            // }
-            // if (true === this._isCommunicationError) {
-            //     reject({error: 100});
-            // }
-            let token = this._getTokenFromStorage();
-            if (token) {
-                resolve(token);
-            } else {
-                return CommunicationService.instance.getUUID()
-                    .then((res) => {
-                        resolve('123456');
-                    })
-                    .catch((error) => {
-                        console.log('LoginManager - failed to retrieve UUID');
-                        reject(error);
-                    })
-            }
-        });
-    }
-
-
-    getRequestId() {
-        if (this._requestId) {
-            return this._requestId;
-        }
-        let s4 = fn => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        };
-
-        this._requestId = s4() + s4()  + s4()  + s4() +
-            s4()  + s4() + s4() + s4();
-
-        return this._requestId;
-    }
-
-
-    getPIN() {
-        if (this._pin) {
-            return this._pin;
-        }
-        let s4 = fn => {
-            return Math.floor((Math.random() * 10))
-        };
-
-        this._pin = [s4(), s4(), s4(), s4()];
-
-        return this._pin;
-    }
-
-
-    /**
      *
      * @returns {string|null}
      * @private
@@ -161,10 +102,7 @@ class LoginManager extends KCLSingleton {
         });
         PubSub.subscribe(events.WS_CONNECTED, () => {
             console.log('LogginManager onconnected to WS');
-            if (this._pin) {
-                this._loginController.displayCardPass('Please pass your card...', this._pin);
-            }
-
+            this._loginController.displayCardPass('Please pass your card...', this._pin);
         });
     }
     

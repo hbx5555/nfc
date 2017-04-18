@@ -40,6 +40,7 @@
     "another-rest-client": "^0.3.2",
     "fingerprintjs": "^0.5.3",
     "jquery": "^3.2.1",
-    "pubsub-js": "^1.5.6"
+    "pubsub-js": "^1.5.6",
+    "query-string-parser": "^0.1.4"
   }
 }
