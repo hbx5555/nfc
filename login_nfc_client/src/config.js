@@ -5,6 +5,7 @@ const events = {
     APPLICATION_ON_INIT: 'APPLICATION_ON_INIT',
     WS_CONNECTED: 'WS_CONNECTED',
     WS_FAILED: 'WS_FAILED',
+    WS_MESSAGE_RECEIVED: 'WS_MESSAGE_RECEIVED',
     INVALID_REQUEST: 'INVALID_REQUEST'
 }
 
@@ -28,12 +29,8 @@ const config = {
             protocol: 'http',
             host: 'localhost',
             port: '57577',
-            apiCalls: {
-                login: {
-                    path: 'login',
-                    method: 'post'
-                }
-            }
+            apiRoot: 'api',
+            apiCalls: ['login']
         },
         remoteSocket: {
             protocol: 'ws',

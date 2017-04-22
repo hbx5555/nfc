@@ -19,16 +19,9 @@ class CommunicationService extends KCLSingleton {
     }
 
     _initCommunicationClients() {
-        this._restClient = new RestClient(this._createUrl(config.endpoints.restServer));
-        this._restClient.res(config.endpoints.restServer.apiCalls.login.path); //login
-
-        // //this._restClient = new RestClient('https://httpbin.org');
-        // this._restClient.res('get');
-        // Object.keys(config.endpoints.restServer.apiCalls).forEach((key) => {
-        //     this._restClient.res(config.endpoints.localProxy.apiCalls[key]); //getUUID
-        // });
-
-        //this._initWebSocketClient();
+        let restConfig = config.endpoints.restServer;
+        this._restClient = new RestClient(this._createUrl(restConfig));
+        this._restClient.res(restConfig.apiRoot).res(restConfig.apiCalls);
     }
 
     openWebSocketClient(channel) {
@@ -45,9 +38,10 @@ class CommunicationService extends KCLSingleton {
         console.log('WS connection established');
     }
 
-    _onWSMessage(evt) {
-
+    _onWSMessage(msg) {
         console.log('WS received message');
+        let data = JSON.parse(msg.data);
+        PubSub.publish(events.WS_MESSAGE_RECEIVED, data);
     }
 
     _onWSError(error) {
@@ -61,7 +55,20 @@ class CommunicationService extends KCLSingleton {
 
 
     login(clientId) {
-        return this._restClient.login.get({clientId: clientId});
+        return this._restClient.api.login.get({clientId: clientId});
+    }
+
+    auth(ott) {
+        return this._restClient.api.login.post({ott: ott}, 'application/x-www-form-urlencoded');
+    }
+
+
+    /**
+     *
+     * @param message
+     */
+    sendMessage(message) {
+        this._webSocketClient(JSON.stringify(message));
     }
 
     getUUID() {

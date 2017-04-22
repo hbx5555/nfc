@@ -2,14 +2,14 @@ var ws = require("nodejs-websocket")
 
 // Scream server example: "hi" -> "HI!!!"
 var server = ws.createServer(function (conn) {
-    console.log("New connection")
+    console.log("New connection");
+
+    setTimeout(function () {
+        conn.sendText(JSON.stringify({ott:'tryue'}));
+    }, 5000);
+
     conn.on("text", function (str) {
-        console.log("Received "+str)
-        setTimeout(function (str) {
-            console.log("Timeout run " + str);
-            var obj = JSON.parse(str);
-            conn.sendText(JSON.stringify({account:obj.message, status: 'excepted'}));
-        }, 2000, str);
+
         //conn.sendText(str.toUpperCase()+"!!!")
     })
     conn.on("close", function (code, reason) {

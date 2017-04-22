@@ -13,6 +13,7 @@ class LoginManager extends KCLSingleton {
     _pin;
     _requestId;
     _clientId;
+    _ott;
     _isValidRequest;
     _isCommunicationError = false;
     _loginController;
@@ -36,35 +37,27 @@ class LoginManager extends KCLSingleton {
     }
 
     _getLoginRequestID() {
+        // setTimeout(() => {
+        //
+        // })
         this._loginController.showLoading(true, 'Sending login request...');
         CommunicationService.instance.login(this._clientId)
             .then((res) => {
-                debugger;
                 this._loginController.showLoading(false);
                 this._handleRequestIdResponse(res);
             })
             .catch((error) => {
+                console.log('LoginManager - failed to retrieve requestId');
                 this._loginController.showLoading(false);
-                //TODO remove
-                let res = {
-//                    pin: '8597',
-                    requestId: 'myrequest888'
-                }
-                this._handleRequestIdResponse(res);
-
-                //TODO uncomment the following
-                // console.log('LoginManager - failed to retrieve requestId');
-                // this._loginController.showLoading(false);
-                // this._loginController.handleError('Failed to retrieve requestId');
+                this._loginController.handleError('Failed to retrieve requestId');
             })
     }
 
 
     _handleRequestIdResponse(res) {
-        this._requestId = res.requestId;
-        this._pin = res.pin;
+        this._requestId = res.RequestId;
+        this._pin = res.PIN;
         CommunicationService.instance.openWebSocketClient(this._requestId);
-
     }
 
 
@@ -98,11 +91,30 @@ class LoginManager extends KCLSingleton {
     _subscribe(){
         PubSub.subscribe(events.WS_FAILED, () => {
             console.log('LogginManager onconnected to WS');
-            this._loginController.handleError('Failed to open web socket')
+            this._loginController.handleError('Failed to open web socket');
+            //this._loginController.displayCardPass('Please pass your card...', this._pin);
         });
         PubSub.subscribe(events.WS_CONNECTED, () => {
             console.log('LogginManager onconnected to WS');
             this._loginController.displayCardPass('Please pass your card...', this._pin);
+        });
+        PubSub.subscribe(events.WS_MESSAGE_RECEIVED, (msg, data) => {
+           //one time token
+            this._ott = data.ott;
+            this._loginController.showLoading(true, 'OTT Received, sending Authentication request...');
+            //TODO close WS
+            CommunicationService.instance.auth(this._ott)
+                .then((res) => {
+                    this._loginController.showLoading(false);
+                    let f = {"AccessToken":"dx0p7acsug2v05ps","RedirectURL":"https://www.google.co.il"};
+                    this._loginController.showLoading(false, '');
+                    window.location = res.RedirectURL + '?' + 'access=' + res.AccessToken;
+                })
+                .catch((error) => {
+                    console.log('LoginManager - failed to retrieve access token');
+                    this._loginController.showLoading(false);
+                    this._loginController.handleError('Failed to retrieve requestId');
+                })
         });
     }
     

@@ -217,8 +217,9 @@ $break-small: 760px;
   justify-content: center;
   div {
     position: absolute;
+    max-width: 500px;
     div {
-      font-size: 26px;
+      font-size: 20px;
       position: relative;
       top: -28px;
     }

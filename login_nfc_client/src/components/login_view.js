@@ -56,7 +56,7 @@ class LoginView {
             this._pinPresenter.inputs[i].value = this._pinPresenter.pin[i];
             this._pinPresenter.index++;
 
-        }, 500);
+        }, 200);
     }
 
     _removeView(viewSelector) {
