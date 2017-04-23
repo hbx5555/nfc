@@ -1,6 +1,8 @@
 /**
  * Created by andreyna on 3/26/2017.
  */
+import KCLConfig from 'external!./kcl_config';
+
 const events = {
     APPLICATION_ON_INIT: 'APPLICATION_ON_INIT',
     WS_CONNECTED: 'WS_CONNECTED',
@@ -16,31 +18,7 @@ const errors = {
 const config = {
     uiContainer: '.app-container',
     kcpTokenName: 'kcp_token',
-    endpoints: {
-        localProxy: {
-            protocol: 'http',
-            host: 'localhost',
-            port: '8888',
-            apiCalls: {
-                getUUID: 'uuid'
-            }
-        },
-        restServer: {
-            protocol: 'http',
-            host: 'localhost',
-            port: '57577',
-            apiRoot: 'api',
-            apiCalls: ['login']
-        },
-        remoteSocket: {
-            protocol: 'ws',
-            host: 'localhost',
-            port: '8001',
-            apiCalls: {
-                auth: ''
-            }
-        }
-    }
+    endpoints: KCLConfig.endpoints
 }
 
-export {config, events, errors};
+export {config, events, errors, KCLConfig};

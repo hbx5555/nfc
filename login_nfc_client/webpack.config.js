@@ -12,8 +12,13 @@ const devConfig = {
         filename: 'kcl.min.js',
         library: 'kcl',
         libraryTarget: 'umd',
-        pathinfo: false
+        pathinfo: false,
+        publicPath: path.resolve(PATH_BASE, 'dist')
     },
+    // externals: {
+    //     'Configurator': JSON.stringify(require('kcl_config.json'))
+    // },
+
     debug: true,
     devtool: '#eval-source-map',
     module: {
@@ -27,17 +32,25 @@ const devConfig = {
                 test: /\.scss$/,
                 loaders: ['style', 'css?sourceMap', 'sass?sourceMap']
             },
-            {
-                test: /\.(png|jpg)$/,
-                loader: 'url-loader?limit=50000'
-            }, // inline base64 URLs for <=10k images, direct URLs for the rest
+            // {
+            //     test: /\.(png|jpg)$/,
+            //     loader: 'url-loader?limit=50000'
+            // }, // inline base64 URLs for <=10k images, direct URLs for the rest
             {
                 test: /\.html$/,
-                loader: 'html'
+                loader: 'html?attrs=false'
             },
             {
                 test: /\.lib\.js$/,
                 loader: 'script-loader'
+            },
+            {
+                test: /\.json$/,
+                loader: 'json-loader'
+            },
+            {
+                test: /\.json$/,
+                loader: 'external-loader'
             }
         ]
     },

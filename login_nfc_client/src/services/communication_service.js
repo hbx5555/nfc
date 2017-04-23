@@ -20,8 +20,13 @@ class CommunicationService extends KCLSingleton {
 
     _initCommunicationClients() {
         let restConfig = config.endpoints.restServer;
-        this._restClient = new RestClient(this._createUrl(restConfig));
-        this._restClient.res(restConfig.apiRoot).res(restConfig.apiCalls);
+        let restClient = new RestClient(this._createUrl(restConfig));
+        this._api = {};
+        Object.keys(restConfig.apiCalls).forEach((key) => {
+            let apiCall = restConfig.apiCalls[key];
+            restClient.res(restConfig.apiRoot).res(apiCall.path);
+            this._api[key] = restClient.api[apiCall.path][apiCall.method];
+        });
     }
 
     openWebSocketClient(channel) {
@@ -54,8 +59,11 @@ class CommunicationService extends KCLSingleton {
     }
 
 
-    login(clientId) {
-        return this._restClient.api.login.get({clientId: clientId});
+    getChannel(clientId) {
+    //    let apiCall = config.endpoints.restServer.apiCalls['channel'];
+  //      this._restApi.res(config.endpoints.restServer.apiCalls['channel'].path);
+//        return this._restClient.api[apiCall.path].get({clientId: clientId});
+        return this._api.channel({clientId: clientId}, 'application/x-www-form-urlencoded');
     }
 
     auth(ott) {
@@ -71,10 +79,6 @@ class CommunicationService extends KCLSingleton {
         this._webSocketClient(JSON.stringify(message));
     }
 
-    getUUID() {
-        return this._restClient[config.endpoints.localProxy.apiCalls.getUUID].get()
-       // return this._restClient.get.get()
-    }
 
     subscribeToKCLServer(subscriber) {
         this._subscribers.push(subscriber);

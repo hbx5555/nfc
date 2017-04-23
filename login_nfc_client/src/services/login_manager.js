@@ -37,11 +37,9 @@ class LoginManager extends KCLSingleton {
     }
 
     _getLoginRequestID() {
-        // setTimeout(() => {
-        //
-        // })
         this._loginController.showLoading(true, 'Sending login request...');
-        CommunicationService.instance.login(this._clientId)
+
+        CommunicationService.instance.getChannel(this._clientId)
             .then((res) => {
                 this._loginController.showLoading(false);
                 this._handleRequestIdResponse(res);
@@ -51,6 +49,7 @@ class LoginManager extends KCLSingleton {
                 this._loginController.showLoading(false);
                 this._loginController.handleError('Failed to retrieve requestId');
             })
+
     }
 
 
@@ -102,19 +101,22 @@ class LoginManager extends KCLSingleton {
            //one time token
             this._ott = data.ott;
             this._loginController.showLoading(true, 'OTT Received, sending Authentication request...');
+            setTimeout(() => {
+                CommunicationService.instance.auth(this._ott)
+                    .then((res) => {
+                        this._loginController.showLoading(false);
+                        let f = {"AccessToken":"dx0p7acsug2v05ps","RedirectURL":"https://www.google.co.il"};
+                        this._loginController.showLoading(false, '');
+                        window.location = res.RedirectURL + '?' + 'access=' + res.AccessToken;
+                    })
+                    .catch((error) => {
+                        console.log('LoginManager - failed to retrieve access token');
+                        this._loginController.showLoading(false);
+                        this._loginController.handleError('Failed to retrieve requestId');
+                    })
+            }, 3000)
             //TODO close WS
-            CommunicationService.instance.auth(this._ott)
-                .then((res) => {
-                    this._loginController.showLoading(false);
-                    let f = {"AccessToken":"dx0p7acsug2v05ps","RedirectURL":"https://www.google.co.il"};
-                    this._loginController.showLoading(false, '');
-                    window.location = res.RedirectURL + '?' + 'access=' + res.AccessToken;
-                })
-                .catch((error) => {
-                    console.log('LoginManager - failed to retrieve access token');
-                    this._loginController.showLoading(false);
-                    this._loginController.handleError('Failed to retrieve requestId');
-                })
+
         });
     }
     

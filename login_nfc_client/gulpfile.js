@@ -14,6 +14,7 @@ const uglify = require('gulp-uglify');
 const gulplog = require('gulplog');
 const gutil = require('gulp-util');
 const babel = require('gulp-babel');
+const path = require('path');
 //npm + Webpack
 const webpack = require('webpack');
 // const named = require('vinyl-named');
@@ -80,10 +81,10 @@ gulp.task('clean', () => {
 //         .pipe(gulp.dest(env.output));
 // });
 
-// gulp.task('index', () => {
-//     return gulp.src('src/index.html')
-//         .pipe(gulp.dest(env.output));
-// });
+gulp.task('index', () => {
+    return gulp.src('./index.html')
+        .pipe(gulp.dest(buildFolder));
+});
 
 gulp.task('build', gulp.series(
     'clean',
@@ -105,9 +106,22 @@ gulp.task('dev',
     gulp.series('build',
         gulp.parallel('watch', 'serve')));
 
+gulp.task('webpack:dist', (callback) => {
+    let cfg = Object.create(webpackConfig);
+    webpack(cfg, function(err, stats) {
+        if (err) throw new gutil.PluginError('webpack', err);
+        gutil.log('[webpack]', stats.toString({
+            colors: true,
+            progress: true
+        }));
+        callback();
+    });
+});
+
 gulp.task('webpack:dev', (callback) => {
     let cfg = Object.create(webpackConfig);
-    new WebpackDevServer(webpack(cfg))
+
+    new WebpackDevServer(webpack(cfg), {contentBase: path.join(__dirname, "dist")})
         .listen(8082, "localhost", function(err) {
             if (err) throw new gutil.PluginError("webpack-dev-server", err);
             gutil.log("[webpack-dev-server]", "http://localhost:8082/webpack-dev-server/index.html");
@@ -126,7 +140,12 @@ gulp.task('webpack:dev', (callback) => {
 
 gulp.task('build:dev', gulp.series(
     'clean',
-    gulp.parallel('styles', 'assets', 'webpack:dev')) //from version 4.0
+    gulp.parallel('styles', 'assets', 'index', 'webpack:dev')) //from version 4.0
+)
+
+gulp.task('build:dist', gulp.series(
+    'clean',
+    gulp.parallel('styles', 'assets', 'webpack:dist')) //from version 4.0
 )
 
 
