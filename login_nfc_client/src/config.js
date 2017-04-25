@@ -1,24 +1,67 @@
 /**
  * Created by andreyna on 3/26/2017.
  */
-import KCLConfig from 'external!./kcl_config';
+import KCLSingleton from './base/kcl_singleton'
+import CommunicationService from './services/communication_service';
+import PubSub from 'pubsub-js';
+import {events} from './kcl_consts';
 
-const events = {
-    APPLICATION_ON_INIT: 'APPLICATION_ON_INIT',
-    WS_CONNECTED: 'WS_CONNECTED',
-    WS_FAILED: 'WS_FAILED',
-    WS_MESSAGE_RECEIVED: 'WS_MESSAGE_RECEIVED',
-    INVALID_REQUEST: 'INVALID_REQUEST'
+
+const defaultConfig  = {
+    "mode": "debug",
+    "endpoints": {
+        "restServer": {
+            "protocol": "http",
+            "host": "localhost",
+            "port": "57577",
+            "apiRoot": "api",
+            "apiCalls": {
+                "channel": {
+                    "path": "login",
+                    "method": "get"
+                },
+                "auth": {
+                    "path": "login",
+                    "method": "post"
+                }
+            }
+
+        },
+        "remoteSocket": {
+            "protocol": "ws",
+            "host": "localhost",
+            "port": "8001"
+        }
+    }
 }
 
-const errors = {
-    COMMUNICATION_FAILED: 100
+class KCLConfig extends KCLSingleton{
+    constructor() {
+        super();
+        //this._initConfig();
+    }
+
+    initConfig() {
+        //if we are in debug mode, then load external config file
+        if (defaultConfig.mode === 'debug') {
+            CommunicationService.instance.loadStaticFile('kcl_config.json')
+                .then((res) => {
+                    console.log(res);
+                    PubSub.publish(events.CONFIG_ON_INIT);
+                    this._config = Object.assign({}, defaultConfig, res);
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+        } else {
+            PubSub.publish(events.CONFIG_ON_INIT);
+        }
+    }
+
+    getConfig() {
+        return this._config;
+    }
 }
 
-const config = {
-    uiContainer: '.app-container',
-    kcpTokenName: 'kcp_token',
-    endpoints: KCLConfig.endpoints
-}
 
-export {config, events, errors, KCLConfig};
+export {KCLConfig};

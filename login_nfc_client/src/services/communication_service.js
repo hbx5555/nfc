@@ -1,10 +1,12 @@
 /**
  * Created by andreyna on 3/28/2017.
  */
-import {config, events} from '../config';
+import {KCLConfig} from '../config';
+import {events,errors} from '../kcl_consts'
 import KCLSingleton from '../base/kcl_singleton';
 import RestClient from 'another-rest-client';
 import PubSub from 'pubsub-js';
+import $ from 'jquery';
 
 
 class CommunicationService extends KCLSingleton {
@@ -15,11 +17,13 @@ class CommunicationService extends KCLSingleton {
 
     constructor() {
         super();
-        this._initCommunicationClients();
+        //this._initCommunicationClients();
     }
 
-    _initCommunicationClients() {
-        let restConfig = config.endpoints.restServer;
+
+
+    init() {
+        let restConfig = KCLConfig.instance.getConfig().endpoints.restServer;
         let restClient = new RestClient(this._createUrl(restConfig));
         this._api = {};
         Object.keys(restConfig.apiCalls).forEach((key) => {
@@ -29,9 +33,23 @@ class CommunicationService extends KCLSingleton {
         });
     }
 
+
+    loadStaticFile(url) {
+        return new Promise((res, rej) => {
+            $.getJSON('kcl_config.json')
+                .done((data) => {
+                    res(data);
+                })
+                .fail((err) => {
+                    rej(err);
+                })
+        });
+
+    }
+
     openWebSocketClient(channel) {
         //this._webSocketClient = new WebSocket(this._createUrl(config.endpoints.remoteSocket) + '/' + channel);
-        this._webSocketClient = new WebSocket(this._createUrl(config.endpoints.remoteSocket));
+        this._webSocketClient = new WebSocket(this._createUrl(KCLConfig.instance.getConfig().endpoints.remoteSocket));
         this._webSocketClient.onopen = this._onWSOpen.bind(this);
         this._webSocketClient.onmessage = this._onWSMessage.bind(this);
         this._webSocketClient.onerror = this._onWSError.bind(this);
@@ -67,7 +85,7 @@ class CommunicationService extends KCLSingleton {
     }
 
     auth(ott) {
-        return this._restClient.api.login.post({ott: ott}, 'application/x-www-form-urlencoded');
+        return this._api.auth({ott: ott}, 'application/x-www-form-urlencoded');
     }
 
 

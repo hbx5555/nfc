@@ -8,7 +8,7 @@ const PATH_BASE = path.resolve(__dirname);
 const devConfig = {
     entry: path.resolve(PATH_BASE, 'src/kcl.js'),
     output: {
-        path: path.resolve(PATH_BASE, 'dist/js'),
+        path: path.resolve(PATH_BASE, 'dist/'),
         filename: 'kcl.min.js',
         library: 'kcl',
         libraryTarget: 'umd',

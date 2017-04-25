@@ -86,6 +86,11 @@ gulp.task('index', () => {
         .pipe(gulp.dest(buildFolder));
 });
 
+gulp.task('config', () => {
+    return gulp.src('./kcl_config.json')
+        .pipe(gulp.dest(buildFolder));
+});
+
 gulp.task('build', gulp.series(
     'clean',
     gulp.parallel('styles', 'scripts', 'assets')) //from version 4.0
@@ -140,12 +145,12 @@ gulp.task('webpack:dev', (callback) => {
 
 gulp.task('build:dev', gulp.series(
     'clean',
-    gulp.parallel('styles', 'assets', 'index', 'webpack:dev')) //from version 4.0
+    gulp.parallel('styles', 'assets', 'index', 'config', 'webpack:dev')) //from version 4.0
 )
 
 gulp.task('build:dist', gulp.series(
     'clean',
-    gulp.parallel('styles', 'assets', 'webpack:dist')) //from version 4.0
+    gulp.parallel('styles', 'assets', 'index', 'config', 'webpack:dist')) //from version 4.0
 )
 
 

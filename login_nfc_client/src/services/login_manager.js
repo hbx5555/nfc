@@ -4,18 +4,16 @@
 import CommunicationService from './communication_service';
 import KCLSingleton from '../base/kcl_singleton';
 import QueryStringParser from 'query-string-parser';
-import {config, events} from '../config';
+import {selectors, events} from '../kcl_consts';
 import PubSub from 'pubsub-js';
 import LoginController from '../components/login_controller';
 
 class LoginManager extends KCLSingleton {
 
     _pin;
-    _requestId;
+    _channelID;
     _clientId;
     _ott;
-    _isValidRequest;
-    _isCommunicationError = false;
     _loginController;
 
     constructor() {
@@ -26,23 +24,23 @@ class LoginManager extends KCLSingleton {
 
     startLogin() {
         this._loginController = new LoginController();
-        this._loginController.start(config.uiContainer);
+        this._loginController.start(selectors.uiContainer);
         let isValidParams = this._parseQueryParams();
         if (false === isValidParams) {
             this._loginController.handleError('Invalid query parameters');
             return;
         }
         
-        this._getLoginRequestID();
+        this._getLoginChannelID();
     }
 
-    _getLoginRequestID() {
+    _getLoginChannelID() {
         this._loginController.showLoading(true, 'Sending login request...');
 
         CommunicationService.instance.getChannel(this._clientId)
             .then((res) => {
                 this._loginController.showLoading(false);
-                this._handleRequestIdResponse(res);
+                this._handleChannelIDResponse(res);
             })
             .catch((error) => {
                 console.log('LoginManager - failed to retrieve requestId');
@@ -53,10 +51,10 @@ class LoginManager extends KCLSingleton {
     }
 
 
-    _handleRequestIdResponse(res) {
-        this._requestId = res.RequestId;
-        this._pin = res.PIN;
-        CommunicationService.instance.openWebSocketClient(this._requestId);
+    _handleChannelIDResponse(res) {
+        this._channelID = res.channel;
+        this._pin = res.pin;
+        CommunicationService.instance.openWebSocketClient(this._channelID);
     }
 
 
@@ -75,18 +73,6 @@ class LoginManager extends KCLSingleton {
     }
 
 
-    /**
-     *
-     * @returns {string|null}
-     * @private
-     */
-    _getTokenFromStorage() {
-        if (window.localStorage) {
-            return window.localStorage.getItem(config.kcpTokenName);
-        }
-    }
-
-
     _subscribe(){
         PubSub.subscribe(events.WS_FAILED, () => {
             console.log('LogginManager onconnected to WS');
@@ -98,25 +84,22 @@ class LoginManager extends KCLSingleton {
             this._loginController.displayCardPass('Please pass your card...', this._pin);
         });
         PubSub.subscribe(events.WS_MESSAGE_RECEIVED, (msg, data) => {
-           //one time token
+            //one time token
             this._ott = data.ott;
             this._loginController.showLoading(true, 'OTT Received, sending Authentication request...');
-            setTimeout(() => {
-                CommunicationService.instance.auth(this._ott)
-                    .then((res) => {
-                        this._loginController.showLoading(false);
-                        let f = {"AccessToken":"dx0p7acsug2v05ps","RedirectURL":"https://www.google.co.il"};
-                        this._loginController.showLoading(false, '');
-                        window.location = res.RedirectURL + '?' + 'access=' + res.AccessToken;
-                    })
-                    .catch((error) => {
-                        console.log('LoginManager - failed to retrieve access token');
-                        this._loginController.showLoading(false);
-                        this._loginController.handleError('Failed to retrieve requestId');
-                    })
-            }, 3000)
-            //TODO close WS
 
+            CommunicationService.instance.auth(this._ott)
+                .then((res) => {
+                    this._loginController.showLoading(false);
+                    console.log(res);
+                   // window.location = res.RedirectURL + '?' + 'access=' + res.AccessToken;
+                })
+                .catch((error) => {
+                    console.log('LoginManager - failed to retrieve access token');
+                    this._loginController.showLoading(false);
+                    this._loginController.handleError('Failed to retrieve requestId');
+                })
+            //TODO close WS
         });
     }
     
