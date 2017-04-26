@@ -7,5 +7,5 @@ import $ from 'jquery';
 window.KCL = window.KCL || new APP();
 
 $(document).ready(() => {
-    window.KCL.startApp();
+   // window.KCL.startApp();
 });

@@ -21,6 +21,7 @@ class LoginView {
     init(container) {
         this._container = container
         $(this._container).append(loginContainer);
+        $(this._container).addClass('kcl-app-active');
     }
 
     displayError(errorCode) {

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -8,19 +9,49 @@
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="main.css" rel="stylesheet">
     <script src="kcl.min.js"></script>
+    <style>
+        .kcl-login {
+            width: 20%;
+            margin: auto;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .kcl-login button {
+            margin: 20px;
+            padding: 10px;
+        }
+    </style>
 </head>
 <body>
 <!--
     you can substitue the span of reauth email for a input with the email and
     include the remember me checkbox
     -->
+
+<div class="kcl-login">
+    <button class="btn btn-default" type="button" onclick="startApp()">Login KCL</button>
+
+</div>
+
 <div class="app-container">
 
 </div>
 
 
+
+
 </body>
 <script>
-
+    function startApp() {
+        console.log('Start APP');
+        window.KCL.startApp();
+    }
 </script>
 </html>
