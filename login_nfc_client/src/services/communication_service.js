@@ -7,6 +7,8 @@ import KCLSingleton from '../base/kcl_singleton';
 import RestClient from 'another-rest-client';
 import PubSub from 'pubsub-js';
 import $ from 'jquery';
+import Stomp from 'stompjs';
+
 
 
 class CommunicationService extends KCLSingleton {
@@ -48,12 +50,27 @@ class CommunicationService extends KCLSingleton {
     }
 
     openWebSocketClient(channel) {
-        //this._webSocketClient = new WebSocket(this._createUrl(config.endpoints.remoteSocket) + '/' + channel);
-        this._webSocketClient = new WebSocket(this._createUrl(KCLConfig.instance.getConfig().endpoints.remoteSocket));
-        this._webSocketClient.onopen = this._onWSOpen.bind(this);
-        this._webSocketClient.onmessage = this._onWSMessage.bind(this);
-        this._webSocketClient.onerror = this._onWSError.bind(this);
-        this._webSocketClient.onclose = this._onWSClose.bind(this);
+        if (KCLConfig.instance.getConfig().endpoints.remoteSocket.type === 'stomp') {
+            this.openWebSocketClientStomp(channel);
+        } else {
+            //DEPRICATED
+            this._webSocketClient = new WebSocket(this._createUrl(config.endpoints.remoteSocket) + '/' + channel);
+            this._webSocketClient.onopen = this._onWSOpen.bind(this);
+            this._webSocketClient.onmessage = this._onWSMessage.bind(this);
+            this._webSocketClient.onerror = this._onWSError.bind(this);
+            this._webSocketClient.onclose = this._onWSClose.bind(this);
+        }
+    }
+
+    openWebSocketClientStomp(channel) {
+        let wsConfig = KCLConfig.instance.getConfig().endpoints.remoteSocket;
+        this._stompClient = Stomp.client(this._createUrl(wsConfig) + '/' + wsConfig.apiRoot);
+        this._stompClient.connect({},() => {
+            this._stompClient.subscribe(channel, this._onWSMessage.bind(this));
+            PubSub.publish(events.WS_CONNECTED);
+        }, this._onWSError.bind(this));
+
+
     }
 
     _onWSOpen() {
@@ -63,7 +80,7 @@ class CommunicationService extends KCLSingleton {
 
     _onWSMessage(msg) {
         console.log('WS received message');
-        let data = JSON.parse(msg.data);
+        let data = JSON.parse(msg.data || msg.body);
         PubSub.publish(events.WS_MESSAGE_RECEIVED, data);
     }
 

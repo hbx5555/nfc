@@ -18,9 +18,11 @@
 
     },
     "remoteSocket": {
+      "type": "stomp",
       "protocol": "ws",
       "host": "localhost",
-      "port": "8001"
+      "port": "8125",
+      "apiRoot": "stomp"
     }
   }
 }

@@ -28,9 +28,11 @@ const defaultConfig  = {
 
         },
         "remoteSocket": {
+            "type": "stomp",
             "protocol": "ws",
             "host": "localhost",
-            "port": "8001"
+            "port": "8001",
+            "apiRoot": "stomp"
         }
     }
 }

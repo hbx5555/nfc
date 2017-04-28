@@ -25,7 +25,7 @@ const devConfig = {
         loaders: [
             {
                 test: /\.js$/,
-                exclude: /node_modules/,
+                //exclude: /node_modules/,
                 loader: 'babel'
             },
             {
@@ -47,10 +47,6 @@ const devConfig = {
             {
                 test: /\.json$/,
                 loader: 'json-loader'
-            },
-            {
-                test: /\.json$/,
-                loader: 'external-loader'
             }
         ]
     },

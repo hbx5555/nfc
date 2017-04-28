@@ -43,6 +43,7 @@ class LoginManager extends KCLSingleton {
                 this._handleChannelIDResponse(res);
             })
             .catch((error) => {
+                console.log(error);
                 console.log('LoginManager - failed to retrieve requestId');
                 this._loginController.showLoading(false);
                 this._loginController.handleError('Failed to retrieve requestId');
