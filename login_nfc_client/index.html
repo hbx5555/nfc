@@ -11,21 +11,82 @@
     <script src="kcl.min.js"></script>
     <style>
         .kcl-login {
-            width: 20%;
-            margin: auto;
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            width: 30%;
             text-align: center;
+            margin-left: 20px;
+            margin-right: 20px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
         }
         .kcl-login button {
-            margin: 20px;
             padding: 10px;
+            width: 100%;
+        }
+        .kcl-login-item button {
+            margin-top: 5px;
+        }
+
+        .kcl-login-hide {
+            display: none;
+        }
+        .debug-container {
+            top: 63px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+        .log-wrapper {
+            width: 70%;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+        #myULContainer {
+            max-height: 400px;
+            overflow: auto;
+            padding: 0px;
+            margin-top: 20px;
+            border: 1px solid black;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+        #myULContainer li {
+            display: block;
+            padding: 9.5px;
+            margin: 0 0 10px;
+            font-size: 11px;
+            font-family: Monospaced;
+            line-height: 1.42857143;
+            color: #333;
+            word-break: break-all;
+            word-wrap: break-word;
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #myULContainer li.text-danger {
+            background-color: #f2dede;
+        }
+        #myULContainer li.text-success {
+            background-color: lightgreen;
+        }
+        #myULContainer li.text-info {
+            background-color: lightblue;
+        }
+
+        .kcl-login-item {
+            margin-top: 20px;
+        }
+
+        #iframeKCL {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            margin: auto;
         }
     </style>
 </head>
@@ -34,24 +95,149 @@
     you can substitue the span of reauth email for a input with the email and
     include the remember me checkbox
     -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">KCL Admin</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
 
-<div class="kcl-login">
-    <button class="btn btn-default" type="button" onclick="startApp()">Login KCL</button>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="active"><a href="#">System status:</a></li>
+                <li class="active"><a href="#"><span class="label label-danger lbl-system-state">TERMINATED</span></a>
+                </li>
+                <li class="active"><a href="#"><span class="label lbl-system-state-date"></span></a></li>
+            </ul>
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</nav>
+<div class="debug-container">
+    <div class="kcl-login">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label for="inputRestAPI" class="col-sm-3 control-label">Rest API</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="inputRestAPI" placeholder="Rest API Endpoint">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputWebSocket" class="col-sm-3 control-label">Web Socket</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="inputWebSocket" placeholder="Web Socket Endpoint">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <button type="button" class="btn btn-default">Update Config</button>
+                    </div>
+                </div>
+
+            </form>
+        <button class="btn btn-success kcl-login-item" type="button" onclick="fullAuth()">Login KCL (E2E)</button>
+        <div class="kcl-login-item">
+            <input class="form-control" id="clientIdInput" type="text" placeholder="Client ID">
+            <button class="btn btn-info" type="button" onclick="sendChannelRequest()">Send Channel request</button>
+        </div>
+        <div class="kcl-login-item kcl-login-hide" id="webSocketForm">
+            <input class="form-control" id="channelIDInput" type="text" placeholder="Web Socket ChannelID">
+            <button class="btn btn-info" type="button" onclick="openWebSocket()">Open Web Socket</button>
+        </div>
+        <div class="kcl-login-item kcl-login-hide" id="ottForm">
+            <input class="form-control" id="ottIDInput" type="text" placeholder="OTT token">
+            <button class="btn btn-info" type="button" onclick="sendAuthRequest()">Send Auth Request</button>
+        </div>
+
+    </div>
+    <div class="log-wrapper">
+        <button class="btn btn-default" type="button" onclick="clearConsole()">Clear Console</button>
+        <ul id="myULContainer"></ul> <!-- I will hold the log messages -->
+    </div>
 
 </div>
-
 <div class="app-container">
 
 </div>
-
-
-
+<iframe src="http://localhost:8082/kcl.html" frameborder="0" id="iframeKCL" class="kcl-login-hide" width="500px" height="500px"></iframe>
 
 </body>
+<script type="application/javascript" src="//cdn.rawgit.com/Alorel/console-log-html/master/console-log-html.min.js"></script>
 <script>
-    function startApp() {
-        console.log('Start APP');
-        window.KCL.startApp();
+    ConsoleLogHTML.connect(document.getElementById("myULContainer")); // Redirect log messages
+    //ConsoleLogHTML.disconnect(); // Stop redirecting
+</script>
+<script>
+    var kclInit = false;
+    window.KCL.initApp();
+
+    window.KCL.subscribe('APPLICATION_ON_INIT', () => {
+        console.info('Consumer, KCL application is ready!');
+        kclInit = true;
+        var config = window.KCL.debug().getConfig();
+        var endpoint = config.endpoints.restServer;
+        document.getElementById('inputRestAPI').value = endpoint.protocol + '://' + endpoint.host + ':' + endpoint.port + '/' + endpoint.apiRoot;
+        document.getElementById('inputWebSocket').value = config.endpoints.remoteSocket.url;
+        console.debug('[CONFIG] ' + JSON.stringify(config));
+    });
+
+    window.KCL.subscribe('WS_CONNECTED', () => {
+        console.info('Connected to WS');
+    });
+
+    window.KCL.subscribe('WS_MESSAGE_RECEIVED', (msg, data) => {
+        console.info('Web Socket Response: [' + JSON.stringify(data) + ']');
+        document.getElementById('ottForm').classList.remove("kcl-login-hide");
+        document.getElementById('ottIDInput').value = data.ott;
+    });
+
+    function clearConsole() {
+        document.getElementById('myULContainer').innerHTML = '';
     }
+
+    function fullAuth() {
+        //create iframe
+        var iframe = document.getElementById('iframeKCL');
+        iframe.src = 'http://localhost:8082/kcl.html?clientId=' + document.getElementById('clientIdInput').value;
+        iframe.classList.remove("kcl-login-hide");
+        window.addEventListener('message', (evt) => {
+            console.info(JSON.stringify(evt.data));
+            iframe.classList.add("kcl-login-hide");
+        }, false);
+    }
+
+    function sendChannelRequest() {
+        window.KCL.debug().getChannel(document.getElementById('clientIdInput').value)
+            .then(function(res) {
+               console.info('GetChannel Response [' + JSON.stringify(res) + ']');
+                document.getElementById('webSocketForm').classList.remove("kcl-login-hide");
+               document.getElementById('channelIDInput').value = res.channel;
+            })
+            .catch(function () {
+
+            });
+    }
+
+    function sendAuthRequest() {
+        window.KCL.debug().auth(document.getElementById('ottIDInput').value)
+            .then(function(res) {
+                console.info('Auth Response [' + JSON.stringify(res) + ']');
+                //TODO redirect
+            })
+            .catch(function () {
+
+            });
+    }
+
+    function openWebSocket() {
+        window.KCL.debug().openSocket(document.getElementById('channelIDInput').value);
+    }
+
 </script>
 </html>

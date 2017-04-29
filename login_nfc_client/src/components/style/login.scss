@@ -4,11 +4,11 @@
 /*
  * General styles
  */
-body, html {
-  height: 100%;
-  background-repeat: no-repeat;
-  background-image: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33));
-}
+//body, html {
+//  height: 100%;
+//  background-repeat: no-repeat;
+//  background-image: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33));
+//}
 
 .card-container.card {
   max-width: 400px;
@@ -153,7 +153,7 @@ $break-small: 760px;
     //background-image: url('assets/backgroundcc.png');
     background-color: whitesmoke;
     background-repeat: no-repeat;
-    height: 500px;
+    height: 200px;
     background-position: center;
     width: 500px;
     display: flex;

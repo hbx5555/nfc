@@ -9,22 +9,45 @@ import CommunicationService from './services/communication_service';
 
 class APP {
 
-    _components = {};
+    _appInit = false;
     constructor() {
+
     }
 
-    startApp() {
+
+    subscribe(event, callback) {
+        PubSub.subscribe(event, callback)
+    }
+
+    initApp() {
         this._subscribe();
+        KCLConfig.instance.initConfig();
+    }
+
+
+    login() {
+        if (this._appInit) {
+            LoginManager.instance.startLogin();
+        } else {
+            console.log('Application is not initialized. Please call in "APPLICATION_ON_INIT" event callback!');
+        }
+    }
+
+    debug() {
+        return {
+            getChannel: LoginManager.instance._getLoginChannelID.bind(LoginManager.instance),
+            getConfig: KCLConfig.instance.getConfig.bind(KCLConfig.instance),
+            openSocket: CommunicationService.instance.openWebSocketClient.bind(CommunicationService.instance),
+            auth: CommunicationService.instance.auth.bind(CommunicationService.instance)
+        }
     }
 
 
     _subscribe() {
-
-        KCLConfig.instance.initConfig();
-
         PubSub.subscribe(events.CONFIG_ON_INIT, () => {
+            this._appInit = true;
             CommunicationService.instance.init();
-            LoginManager.instance.startLogin();
+            PubSub.publish(events.APPLICATION_ON_INIT);
         });
     }
 

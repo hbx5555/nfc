@@ -64,7 +64,7 @@ class CommunicationService extends KCLSingleton {
 
     openWebSocketClientStomp(channel) {
         let wsConfig = KCLConfig.instance.getConfig().endpoints.remoteSocket;
-        this._stompClient = Stomp.client(this._createUrl(wsConfig) + '/' + wsConfig.apiRoot);
+        this._stompClient = Stomp.client(wsConfig.url);
         this._stompClient.connect({},() => {
             this._stompClient.subscribe(channel, this._onWSMessage.bind(this));
             PubSub.publish(events.WS_CONNECTED);

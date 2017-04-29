@@ -15,14 +15,16 @@ class LoginManager extends KCLSingleton {
     _clientId;
     _ott;
     _loginController;
+    _isDebugMode;
 
     constructor() {
       super();
-      
-      this._subscribe();
+
     }
 
+
     startLogin() {
+        this._subscribe();
         this._loginController = new LoginController();
         this._loginController.start(selectors.uiContainer);
         let isValidParams = this._parseQueryParams();
@@ -30,14 +32,9 @@ class LoginManager extends KCLSingleton {
             this._loginController.handleError('Invalid query parameters');
             return;
         }
-        
-        this._getLoginChannelID();
-    }
 
-    _getLoginChannelID() {
         this._loginController.showLoading(true, 'Sending login request...');
-
-        CommunicationService.instance.getChannel(this._clientId)
+        this._getLoginChannelID(this._clientId)
             .then((res) => {
                 this._loginController.showLoading(false);
                 this._handleChannelIDResponse(res);
@@ -48,7 +45,10 @@ class LoginManager extends KCLSingleton {
                 this._loginController.showLoading(false);
                 this._loginController.handleError('Failed to retrieve requestId');
             })
+    }
 
+    _getLoginChannelID(clientId) {
+        return CommunicationService.instance.getChannel(clientId)
     }
 
 
@@ -93,6 +93,7 @@ class LoginManager extends KCLSingleton {
                 .then((res) => {
                     this._loginController.showLoading(false);
                     console.log(res);
+                    window.parent.postMessage(res, '*');
                    // window.location = res.RedirectURL + '?' + 'access=' + res.AccessToken;
                 })
                 .catch((error) => {

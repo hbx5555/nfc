@@ -82,7 +82,7 @@ gulp.task('clean', () => {
 // });
 
 gulp.task('index', () => {
-    return gulp.src('./index.html')
+    return gulp.src('./*.html')
         .pipe(gulp.dest(buildFolder));
 });
 
