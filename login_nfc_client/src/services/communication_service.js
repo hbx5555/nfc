@@ -22,15 +22,25 @@ class CommunicationService extends KCLSingleton {
         //this._initCommunicationClients();
     }
 
-
-
-    init() {
+    initRestClient() {
         let restConfig = KCLConfig.instance.getConfig().endpoints.restServer;
-        let restClient = new RestClient(this._createUrl(restConfig));
+        let parser = this._getUrlParser(restConfig.url);
+        let restClient = new RestClient(this._createUrlFromParser(parser));
+        let apiPath = this._getPathParams(parser);
+        let rootResource = null;
         this._api = {};
+        apiPath.forEach((path) => {
+            if (rootResource) {
+                rootResource = rootResource.res(path);
+            } else {
+                rootResource = restClient.res(path);
+            }
+        });
+
+
         Object.keys(restConfig.apiCalls).forEach((key) => {
             let apiCall = restConfig.apiCalls[key];
-            restClient.res(restConfig.apiRoot).res(apiCall.path);
+            rootResource.res(apiCall.path);
             this._api[key] = restClient.api[apiCall.path][apiCall.method];
         });
     }
@@ -47,6 +57,19 @@ class CommunicationService extends KCLSingleton {
                 })
         });
 
+    }
+
+    _getUrlParser(url) {
+        var parser = document.createElement('a');
+        parser.href = url;
+        return parser;
+    }
+
+    _getPathParams(parser) {
+        let pathNames = parser.pathname.split('/');
+        return pathNames.filter((name) => {
+            return "" !== name;
+        });
     }
 
     openWebSocketClient(channel) {
@@ -121,6 +144,10 @@ class CommunicationService extends KCLSingleton {
 
     _createUrl(endpoint) {
         return endpoint.protocol + '://' + endpoint.host + ':' + endpoint.port;
+    }
+
+    _createUrlFromParser(urlParser) {
+        return urlParser.protocol + '//' + urlParser.host;
     }
 
     initCommunication() {

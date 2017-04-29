@@ -11,6 +11,7 @@ const defaultConfig  = {
     "mode": "debug",
     "endpoints": {
         "restServer": {
+            "url": "http://localhost:57577/api",
             "protocol": "http",
             "host": "localhost",
             "port": "57577",
@@ -59,6 +60,10 @@ class KCLConfig extends KCLSingleton{
         } else {
             PubSub.publish(events.CONFIG_ON_INIT);
         }
+    }
+
+    updateConfig(config) {
+        this._config = Object.assign({}, this._config, config);
     }
 
     getConfig() {

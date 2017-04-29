@@ -136,7 +136,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-12">
-                        <button type="button" class="btn btn-default">Update Config</button>
+                        <button type="button" onclick="updateConfig()" class="btn btn-default">Update Config</button>
                     </div>
                 </div>
 
@@ -196,6 +196,16 @@
         document.getElementById('ottForm').classList.remove("kcl-login-hide");
         document.getElementById('ottIDInput').value = data.ott;
     });
+
+    function updateConfig() {
+        var restURL = document.getElementById('inputRestAPI').value;
+        var wsURL = document.getElementById('inputWebSocket').value;
+        var config = window.KCL.debug().getConfig();
+        config.endpoints.restServer.url = restURL;
+        config.endpoints.remoteSocket.url = wsURL;
+
+        window.KCL.debug().updateConfig(config);
+    }
 
     function clearConsole() {
         document.getElementById('myULContainer').innerHTML = '';

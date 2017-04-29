@@ -38,15 +38,20 @@ class APP {
             getChannel: LoginManager.instance._getLoginChannelID.bind(LoginManager.instance),
             getConfig: KCLConfig.instance.getConfig.bind(KCLConfig.instance),
             openSocket: CommunicationService.instance.openWebSocketClient.bind(CommunicationService.instance),
-            auth: CommunicationService.instance.auth.bind(CommunicationService.instance)
+            auth: CommunicationService.instance.auth.bind(CommunicationService.instance),
+            updateConfig:this.restart.bind(this)
         }
     }
 
+    restart(newConfig) {
+        KCLConfig.instance.updateConfig(newConfig);
+        CommunicationService.instance.initRestClient();
+    }
 
     _subscribe() {
         PubSub.subscribe(events.CONFIG_ON_INIT, () => {
             this._appInit = true;
-            CommunicationService.instance.init();
+            CommunicationService.instance.initRestClient();
             PubSub.publish(events.APPLICATION_ON_INIT);
         });
     }

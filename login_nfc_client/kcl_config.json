@@ -1,6 +1,7 @@
 {
   "endpoints": {
     "restServer": {
+      "url": "http://localhost:57577/api",
       "protocol": "http",
       "host": "localhost",
       "port": "57577",
