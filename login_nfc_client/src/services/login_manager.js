@@ -55,6 +55,7 @@ class LoginManager extends KCLSingleton {
     _handleChannelIDResponse(res) {
         this._channelID = res.channel;
         this._pin = res.pin;
+        window.parent.postMessage({actionId: 'channel', postData: res}, '*');
         CommunicationService.instance.openWebSocketClient(this._channelID);
     }
 
@@ -93,7 +94,7 @@ class LoginManager extends KCLSingleton {
                 .then((res) => {
                     this._loginController.showLoading(false);
                     console.log(res);
-                    window.parent.postMessage(res, '*');
+                    window.parent.postMessage({actionId: 'close', postData: res}, '*');
                    // window.location = res.RedirectURL + '?' + 'access=' + res.AccessToken;
                 })
                 .catch((error) => {

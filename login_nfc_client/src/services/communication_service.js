@@ -41,7 +41,8 @@ class CommunicationService extends KCLSingleton {
         Object.keys(restConfig.apiCalls).forEach((key) => {
             let apiCall = restConfig.apiCalls[key];
             rootResource.res(apiCall.path);
-            this._api[key] = restClient.api[apiCall.path][apiCall.method];
+            //this._api[key] = restClient[].[apiCall.path][apiCall.method];
+            this._api[key] = rootResource[apiCall.path][apiCall.method];
         });
     }
 

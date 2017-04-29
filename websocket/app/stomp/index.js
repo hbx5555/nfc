@@ -32,7 +32,8 @@ var server = ws.createServer(function (conn) {
     conn.on("text", function (str) {
         console.log(str);
         //str = channel id
-        stompServer.send(str, {}, JSON.stringify({ott: '45765829'}));
+
+        stompServer.send(str, {}, JSON.stringify({ott: makeid()}));
     })
     conn.on("close", function (code, reason) {
         console.log("Connection closed")
@@ -43,4 +44,15 @@ var server = ws.createServer(function (conn) {
 }).listen(8001)
 
 console.log("Server run")
+
+function makeid()
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < 16; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
 

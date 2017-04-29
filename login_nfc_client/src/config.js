@@ -63,6 +63,7 @@ class KCLConfig extends KCLSingleton{
     }
 
     updateConfig(config) {
+        debugger;
         this._config = Object.assign({}, this._config, config);
     }
 

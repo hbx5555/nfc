@@ -123,14 +123,20 @@
     <div class="kcl-login">
             <form class="form-horizontal">
                 <div class="form-group">
-                    <label for="inputRestAPI" class="col-sm-3 control-label">Rest API</label>
-                    <div class="col-sm-9">
+                    <label for="inputRestAPI" class="col-sm-4 control-label">Rest API</label>
+                    <div class="col-sm-8">
                         <input type="text" class="form-control" id="inputRestAPI" placeholder="Rest API Endpoint">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="inputWebSocket" class="col-sm-3 control-label">Web Socket</label>
-                    <div class="col-sm-9">
+                    <label for="inputStompWebSocket" class="col-sm-4 control-label">Stomp Web Socket</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="inputStompWebSocket" placeholder="Web Socket Endpoint">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputWebSocket" class="col-sm-4 control-label">Web Socket</label>
+                    <div class="col-sm-8">
                         <input type="text" class="form-control" id="inputWebSocket" placeholder="Web Socket Endpoint">
                     </div>
                 </div>
@@ -143,17 +149,20 @@
             </form>
         <button class="btn btn-success kcl-login-item" type="button" onclick="fullAuth()">Login KCL (E2E)</button>
         <div class="kcl-login-item">
-            <input class="form-control" id="clientIdInput" type="text" placeholder="Client ID">
+            <input class="form-control" id="clientIdInput" type="text" value="x6lu85w3j6xfhn4v" placeholder="Client ID">
             <button class="btn btn-info" type="button" onclick="sendChannelRequest()">Send Channel request</button>
         </div>
         <div class="kcl-login-item kcl-login-hide" id="webSocketForm">
             <input class="form-control" id="channelIDInput" type="text" placeholder="Web Socket ChannelID">
             <button class="btn btn-info" type="button" onclick="openWebSocket()">Open Web Socket</button>
+            <button class="btn btn-info" type="button" id="btnOttResponse" disabled onclick="simulateOTTResponse()">Simulate OTT Response</button>
         </div>
         <div class="kcl-login-item kcl-login-hide" id="ottForm">
             <input class="form-control" id="ottIDInput" type="text" placeholder="OTT token">
             <button class="btn btn-info" type="button" onclick="sendAuthRequest()">Send Auth Request</button>
         </div>
+
+
 
     </div>
     <div class="log-wrapper">
@@ -174,6 +183,10 @@
     //ConsoleLogHTML.disconnect(); // Stop redirecting
 </script>
 <script>
+    var localConfig = {
+        wsUrl: 'ws://localhost:8001'
+    }
+    document.getElementById('inputWebSocket').value = localConfig.wsUrl;
     var kclInit = false;
     window.KCL.initApp();
 
@@ -183,12 +196,13 @@
         var config = window.KCL.debug().getConfig();
         var endpoint = config.endpoints.restServer;
         document.getElementById('inputRestAPI').value = endpoint.protocol + '://' + endpoint.host + ':' + endpoint.port + '/' + endpoint.apiRoot;
-        document.getElementById('inputWebSocket').value = config.endpoints.remoteSocket.url;
+        document.getElementById('inputStompWebSocket').value = config.endpoints.remoteSocket.url;
         console.debug('[CONFIG] ' + JSON.stringify(config));
     });
 
     window.KCL.subscribe('WS_CONNECTED', () => {
         console.info('Connected to WS');
+        document.getElementById('btnOttResponse').disabled = false;
     });
 
     window.KCL.subscribe('WS_MESSAGE_RECEIVED', (msg, data) => {
@@ -207,6 +221,14 @@
         window.KCL.debug().updateConfig(config);
     }
 
+    function simulateOTTResponse() {
+        var ws = new WebSocket(document.getElementById('inputWebSocket').value);
+        ws.onopen = () => {
+            ws.send(document.getElementById('channelIDInput').value);
+            //ws.close();
+        };
+    }
+
     function clearConsole() {
         document.getElementById('myULContainer').innerHTML = '';
     }
@@ -216,11 +238,22 @@
         var iframe = document.getElementById('iframeKCL');
         iframe.src = 'http://localhost:8082/kcl.html?clientId=' + document.getElementById('clientIdInput').value;
         iframe.classList.remove("kcl-login-hide");
-        window.addEventListener('message', (evt) => {
-            console.info(JSON.stringify(evt.data));
-            iframe.classList.add("kcl-login-hide");
-        }, false);
+
     }
+
+    window.addEventListener('message', (evt) => {
+        console.info('Post message event received Action:[' + evt.data.actionId + ']\n Data: [' + JSON.stringify(evt.data.postData) +']');
+        switch (evt.data.actionId) {
+            case 'close':
+                document.getElementById('iframeKCL').classList.add("kcl-login-hide");
+                break;
+            case 'channel':
+                document.getElementById('webSocketForm').classList.remove("kcl-login-hide");
+                document.getElementById('channelIDInput').value = evt.data.postData.channel;
+                document.getElementById('btnOttResponse').disabled = false;
+                break
+        }
+    }, false);
 
     function sendChannelRequest() {
         window.KCL.debug().getChannel(document.getElementById('clientIdInput').value)
