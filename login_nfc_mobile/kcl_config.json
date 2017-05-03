@@ -1,0 +1,30 @@
+{
+  "endpoints": {
+    "restServer": {
+      "url": "http://localhost:57577/api",
+      "protocol": "http",
+      "host": "localhost",
+      "port": "57577",
+      "apiRoot": "api",
+      "apiCalls": {
+        "channel": {
+          "path": "login",
+          "method": "get"
+        },
+        "auth": {
+          "path": "login",
+          "method": "post"
+        }
+      }
+
+    },
+    "remoteSocket": {
+      "url": "ws://localhost:8125/stomp",
+      "type": "stomp",
+      "protocol": "ws",
+      "host": "localhost",
+      "port": "8125",
+      "apiRoot": "stomp"
+    }
+  }
+}

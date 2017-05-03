@@ -1,0 +1,42 @@
+<!--<div class="container">-->
+    <!--<div class="card card-container">-->
+        <!--<img id="profile-img" class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />-->
+        <!--<p id="profile-name" class="profile-name-card"></p>-->
+        <!--<form class="form-signin">-->
+            <!--<span id="reauth-email" class="reauth-email"></span>-->
+            <!--<button class="btn btn-lg btn-primary btn-block btn-signin" type="button">GET UUID</button>-->
+            <!--&lt;!&ndash;<input type="email" id="inputEmail" class="form-control" name="first" placeholder="Email address" required autofocus>&ndash;&gt;-->
+            <!--&lt;!&ndash;<button class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Sign in</button>&ndash;&gt;-->
+            <!--&lt;!&ndash;<button  class="btn btn-lg btn-primary btn-block btn-signin"  type="submit">Enter Account</button>&ndash;&gt;-->
+            <!--&lt;!&ndash;<button  class="btn btn-primary btn-lg btn-waiting"><i class="fa fa-refresh fa-spin"></i> Waiting to pass credit card...</button>&ndash;&gt;-->
+        <!--</form>&lt;!&ndash; /form &ndash;&gt;-->
+    <!--</div>&lt;!&ndash; /card-container &ndash;&gt;-->
+<!--</div>&lt;!&ndash; /container &ndash;&gt;-->
+
+<div class="kcl-login-container">
+    <div class="kcl-login-wrapper">
+        <div class="kcl-login-content hide">
+            <img id="profile-img" class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
+            <!--<button class="btn btn-lg btn-primary btn-block btn-signin" id="testBtn" type="button">GET UUID</button>-->
+            <div id="preloader" class="hide">
+                <div>
+                    <div id="kcp-action-name">Identify user</div>
+                </div>
+                <img src="/../../dist/assets/ellipsis-new.gif"/>
+            </div>
+            <div id="pinContainer" class="hide">
+                <div>
+                    We can't strongly identify you. Please pass your card and type the following PIN code
+                </div>
+                <input disabled type="text" maxlength=1 id="1" />
+                <input disabled type="text" maxlength=1 id="a" />
+                <input disabled type="text" maxlength=1 id="b" />
+                <input disabled type="text" maxlength=1 id="c" />
+            </div>
+            <p id="resultTest"></p>
+        </div>
+        <div class="kcl-login-content-error hide">
+            COMMUNICATION ERROR!!!
+        </div>
+    </div>
+</div>

@@ -88,9 +88,9 @@ class CommunicationService extends KCLSingleton {
 
     openWebSocketClientStomp(channel) {
         let wsConfig = KCLConfig.instance.getConfig().endpoints.remoteSocket;
-        this._stompClient = Stomp.client(wsConfig.url + '?channel=' + channel + '&client=web');
+        this._stompClient = Stomp.client(wsConfig.url + '?channel=' + channel + '&client=dev');
         this._stompClient.connect({},() => {
-            this._stompClient.subscribe('/user/queue/msg/web', this._onWSMessage.bind(this));
+            this._stompClient.subscribe('/user/queue/msg/dev', this._onWSMessage.bind(this));
             PubSub.publish(events.WS_CONNECTED);
         }, this._onWSError.bind(this));
     }
@@ -117,7 +117,7 @@ class CommunicationService extends KCLSingleton {
 
 
     getChannel() {
-        return this._api.channel({clientId: clientId}, 'application/x-www-form-urlencoded');
+        return this._api.channel();
     }
 
     auth(ott) {

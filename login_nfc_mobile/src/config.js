@@ -29,7 +29,7 @@ const defaultConfig  = {
 
         },
         "remoteSocket": {
-            "url": "ws://localhost:8125/kcl/api/v1/ws",
+            "url": "ws://localhost:8125/stomp",
             "type": "stomp",
             "protocol": "ws",
             "host": "localhost",
