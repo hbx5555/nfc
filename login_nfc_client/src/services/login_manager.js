@@ -44,6 +44,7 @@ class LoginManager extends KCLSingleton {
                 console.log('LoginManager - failed to retrieve requestId');
                 this._loginController.showLoading(false);
                 this._loginController.handleError('Failed to retrieve requestId');
+                window.parent.postMessage({actionId: 'error', postData: {code:2}}, '*');
             })
     }
 
