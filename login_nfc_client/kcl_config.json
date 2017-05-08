@@ -1,14 +1,14 @@
 {
   "endpoints": {
     "restServer": {
-      "url": "http://localhost:57577/api",
+      "url": "http://ec2-54-93-195-172.eu-central-1.compute.amazonaws.com:9090/kcl/api/v1",
       "protocol": "http",
-      "host": "localhost",
-      "port": "57577",
+      "host": "ec2-54-93-195-172.eu-central-1.compute.amazonaws.com",
+      "port": "9090",
       "apiRoot": "api",
       "apiCalls": {
         "channel": {
-          "path": "login",
+          "path": "auth",
           "method": "get"
         },
         "auth": {

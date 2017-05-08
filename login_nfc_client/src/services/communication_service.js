@@ -116,8 +116,8 @@ class CommunicationService extends KCLSingleton {
     }
 
 
-    getChannel(clientId) {
-        return this._api.channel({clientId: clientId}, 'application/x-www-form-urlencoded');
+    getChannel(domainKey) {
+        return this._api.channel({domainKey: domainKey}, 'application/x-www-form-urlencoded');
     }
 
     auth(ott) {
