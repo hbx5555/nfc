@@ -7,6 +7,7 @@ import QueryStringParser from 'query-string-parser';
 import {selectors, events} from '../kcl_consts';
 import PubSub from 'pubsub-js';
 import LoginController from '../components/login_controller';
+import PostMessageService from './post_message_service';
 
 class LoginManager extends KCLSingleton {
 
@@ -30,6 +31,7 @@ class LoginManager extends KCLSingleton {
         let isValidParams = this._parseQueryParams();
         if (false === isValidParams) {
             this._loginController.handleError('Invalid query parameters');
+            window.parent.postMessage({actionId: 'error', postData: {code:1}}, '*');
             return;
         }
 
@@ -44,6 +46,7 @@ class LoginManager extends KCLSingleton {
                 console.log('LoginManager - failed to retrieve requestId');
                 this._loginController.showLoading(false);
                 this._loginController.handleError('Failed to retrieve requestId');
+                PostMessageService.instance.sendPostMessage({actionId: 'error', postData: {code:2}});
             })
     }
 
