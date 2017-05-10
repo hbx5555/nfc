@@ -8,6 +8,7 @@ import RestClient from 'another-rest-client';
 import PubSub from 'pubsub-js';
 import $ from 'jquery';
 import Stomp from 'stompjs';
+import SockJS from 'sockjs-client';
 
 
 
@@ -24,9 +25,8 @@ class CommunicationService extends KCLSingleton {
 
     initRestClient() {
         let restConfig = KCLConfig.instance.getConfig().endpoints.restServer;
-        let parser = this._getUrlParser(restConfig.url);
-        let restClient = new RestClient(this._createUrlFromParser(parser));
-        let apiPath = this._getPathParams(parser);
+        let restClient = new RestClient(this._createUrl(restConfig));
+        let apiPath = this._getPathParams(restConfig.apiRoot);
         let rootResource = null;
         this._api = {};
         apiPath.forEach((path) => {
@@ -67,7 +67,7 @@ class CommunicationService extends KCLSingleton {
     }
 
     _getPathParams(parser) {
-        let pathNames = parser.pathname.split('/');
+        let pathNames = parser.split('/');
         return pathNames.filter((name) => {
             return "" !== name;
         });
@@ -88,7 +88,9 @@ class CommunicationService extends KCLSingleton {
 
     openWebSocketClientStomp(channel) {
         let wsConfig = KCLConfig.instance.getConfig().endpoints.remoteSocket;
-        this._stompClient = Stomp.client(wsConfig.url + '?channel=' + channel + '&client=web');
+        var socket = new SockJS(this._createFullURL(wsConfig) + '?channel=' + channel + '&client=web');
+        this._stompClient = Stomp.over(socket);
+        // this._stompClient = Stomp.client(wsConfig.url + '?channel=' + channel + '&client=web');
         this._stompClient.connect({},() => {
             this._stompClient.subscribe('/user/queue/msg/web', this._onWSMessage.bind(this));
             PubSub.publish(events.WS_CONNECTED);
@@ -140,6 +142,17 @@ class CommunicationService extends KCLSingleton {
 
     _createUrl(endpoint) {
         return endpoint.protocol + '://' + endpoint.host + ':' + endpoint.port;
+    }
+
+    _createFullURL(endpoint) {
+        let url = this._createUrl();
+        let paths = this._getPathParams(endpoint.apiRoot);
+        paths.forEach((p) => {
+            url += '/';
+            url += p;;
+        });
+
+        return url;
     }
 
     _createUrlFromParser(urlParser) {

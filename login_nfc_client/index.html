@@ -196,7 +196,7 @@
         var config = window.KCL.debug().getConfig();
         var endpoint = config.endpoints.restServer;
         document.getElementById('inputRestAPI').value = endpoint.protocol + '://' + endpoint.host + ':' + endpoint.port + '/' + endpoint.apiRoot;
-        document.getElementById('inputStompWebSocket').value = config.endpoints.remoteSocket.url;
+        document.getElementById('inputStompWebSocket').value = endpoint.protocol + '://' + endpoint.host + ':' + endpoint.port + '/' + endpoint.apiRoot;
         console.debug('[CONFIG] ' + JSON.stringify(config));
     });
 

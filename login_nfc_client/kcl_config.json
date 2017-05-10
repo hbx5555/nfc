@@ -1,11 +1,11 @@
 {
   "endpoints": {
     "restServer": {
-      "url": "http://ec2-54-93-195-172.eu-central-1.compute.amazonaws.com:9090/kcl/api/v1",
+      "url": "http://ec2-54-93-93-168.eu-central-1.compute.amazonaws.com:9090/kcl/api/v1",
       "protocol": "http",
-      "host": "ec2-54-93-195-172.eu-central-1.compute.amazonaws.com",
+      "host": "ec2-54-93-93-168.eu-central-1.compute.amazonaws.com",
       "port": "9090",
-      "apiRoot": "api",
+      "apiRoot": "/kcl/api/v1",
       "apiCalls": {
         "channel": {
           "path": "auth",
@@ -19,7 +19,7 @@
 
     },
     "remoteSocket": {
-      "url": "ws://localhost:8125/stomp",
+      "url": "http://ec2-54-93-93-168.eu-central-1.compute.amazonaws.com:9090/kcl/api/v1/ws",
       "type": "stomp",
       "protocol": "ws",
       "host": "localhost",
