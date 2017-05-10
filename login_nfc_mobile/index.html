@@ -170,7 +170,7 @@
         <div class="kcl-login-item kcl-login-hide" id="webSocketForm">
             <input class="form-control" id="channelIDInput" type="text" placeholder="Web Socket ChannelID">
             <button class="btn btn-info" type="button" onclick="openWebSocket()">Open Web Socket</button>
-            <button class="btn btn-info" type="button" id="btnOttResponse" disabled onclick="simulateOTTResponse()">Simulate OTT Response</button>
+            <button class="btn btn-info" type="button" id="btnCPRRequest" disabled onclick="sendCPRRequest()">Send CPR Request</button>
         </div>
         <div class="kcl-login-item kcl-login-hide" id="ottForm">
             <input class="form-control" id="ottIDInput" type="text" placeholder="OTT token">
@@ -226,7 +226,7 @@
 
     window.KCL.subscribe('WS_CONNECTED', () => {
         console.info('Connected to WS');
-        document.getElementById('btnOttResponse').disabled = false;
+        document.getElementById('btnCPRRequest').disabled = false;
     });
 
     window.KCL.subscribe('WS_MESSAGE_RECEIVED', (msg, data) => {
@@ -245,12 +245,14 @@
         window.KCL.debug().updateConfig(config);
     }
 
-    function simulateOTTResponse() {
-        var ws = new WebSocket(document.getElementById('inputWebSocket').value);
-        ws.onopen = () => {
-            ws.send(document.getElementById('channelIDInput').value);
-            //ws.close();
-        };
+    function sendCPRRequest() {
+        var CPRData = {
+            cardTag: document.getElementById('inputCardTag').value,
+            expDateMonth: document.getElementById('inputExpDateMonth').value,
+            expDateYear: document.getElementById('inputExpDateYear').value,
+            cardNumber: document.getElementById('inputCardNumber').value
+        } ;
+       window.KCL.debug().sendCPR(CPRData);
     }
 
     function clearConsole() {

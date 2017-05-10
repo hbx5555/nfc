@@ -95,6 +95,10 @@ class CommunicationService extends KCLSingleton {
         }, this._onWSError.bind(this));
     }
 
+    sendCPRRequest(CPRData) {
+        this._stompClient.send('channel', {}, JSON.stringify(CPRData));
+    }
+
     _onWSOpen() {
         PubSub.publish(events.WS_CONNECTED);
         console.log('WS connection established');

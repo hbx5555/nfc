@@ -38,6 +38,7 @@ class APP {
             getChannel: LoginManager.instance._getLoginChannelID.bind(LoginManager.instance),
             getConfig: KCLConfig.instance.getConfig.bind(KCLConfig.instance),
             openSocket: CommunicationService.instance.openWebSocketClient.bind(CommunicationService.instance),
+            sendCPR: CommunicationService.instance.sendCPRRequest.bind(CommunicationService.instance),
             auth: CommunicationService.instance.auth.bind(CommunicationService.instance),
             updateConfig:this.restart.bind(this)
         }
