@@ -129,7 +129,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="inputStompWebSocket" class="col-sm-4 control-label">Stomp Web Socket</label>
+                    <label for="inputStompWebSocket" class="col-sm-4 control-label">Web Socket API</label>
                     <div class="col-sm-8">
                         <input type="text" class="form-control" id="inputStompWebSocket" placeholder="Web Socket Endpoint">
                     </div>
@@ -183,11 +183,13 @@
     //ConsoleLogHTML.disconnect(); // Stop redirecting
 </script>
 <script>
+
     var localConfig = {
-        wsUrl: 'ws://localhost:8001'
+        wsUrl: 'ws://localhost:8002'
     }
     document.getElementById('inputWebSocket').value = localConfig.wsUrl;
     var kclInit = false;
+
     window.KCL.initApp();
 
     window.KCL.subscribe('APPLICATION_ON_INIT', () => {
@@ -196,6 +198,7 @@
         var config = window.KCL.debug().getConfig();
         var endpoint = config.endpoints.restServer;
         document.getElementById('inputRestAPI').value = endpoint.protocol + '://' + endpoint.host + ':' + endpoint.port + '/' + endpoint.apiRoot;
+        endpoint = config.endpoints.remoteSocket;
         document.getElementById('inputStompWebSocket').value = endpoint.protocol + '://' + endpoint.host + ':' + endpoint.port + '/' + endpoint.apiRoot;
         console.debug('[CONFIG] ' + JSON.stringify(config));
     });

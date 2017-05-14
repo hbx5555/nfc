@@ -54,7 +54,7 @@ class CommunicationService extends KCLSingleton {
                     res(data);
                 })
                 .fail((err) => {
-                    rej(err);
+                   rej(err);
                 })
         });
 
@@ -74,28 +74,24 @@ class CommunicationService extends KCLSingleton {
     }
 
     openWebSocketClient(channel) {
-        if (KCLConfig.instance.getConfig().endpoints.remoteSocket.type === 'stomp') {
-            this.openWebSocketClientStomp(channel);
-        } else {
-            //DEPRICATED
-            this._webSocketClient = new WebSocket(this._createUrl(config.endpoints.remoteSocket) + '/' + channel);
-            this._webSocketClient.onopen = this._onWSOpen.bind(this);
-            this._webSocketClient.onmessage = this._onWSMessage.bind(this);
-            this._webSocketClient.onerror = this._onWSError.bind(this);
-            this._webSocketClient.onclose = this._onWSClose.bind(this);
-        }
+        let wsConfig = KCLConfig.instance.getConfig().endpoints.remoteSocket;
+        this._webSocketClient = new WebSocket(this._createFullURL(wsConfig) + '?channel=' + channel + '&client=web');
+        this._webSocketClient.onopen = this._onWSOpen.bind(this);
+        this._webSocketClient.onmessage = this._onWSMessage.bind(this);
+        this._webSocketClient.onerror = this._onWSError.bind(this);
+        this._webSocketClient.onclose = this._onWSClose.bind(this);
     }
 
-    openWebSocketClientStomp(channel) {
-        let wsConfig = KCLConfig.instance.getConfig().endpoints.remoteSocket;
-        var socket = new SockJS(this._createFullURL(wsConfig) + '?channel=' + channel + '&client=web');
-        this._stompClient = Stomp.over(socket);
-        // this._stompClient = Stomp.client(wsConfig.url + '?channel=' + channel + '&client=web');
-        this._stompClient.connect({},() => {
-            this._stompClient.subscribe('/user/queue/msg/web', this._onWSMessage.bind(this));
-            PubSub.publish(events.WS_CONNECTED);
-        }, this._onWSError.bind(this));
-    }
+    // openWebSocketClientStomp(channel) {
+    //     let wsConfig = KCLConfig.instance.getConfig().endpoints.remoteSocket;
+    //     var socket = new SockJS(this._createFullURL(wsConfig) + '?channel=' + channel + '&client=web');
+    //     this._stompClient = Stomp.over(socket);
+    //     // this._stompClient = Stomp.client(wsConfig.url + '?channel=' + channel + '&client=web');
+    //     this._stompClient.connect({},() => {
+    //         this._stompClient.subscribe('/user/queue/msg/web', this._onWSMessage.bind(this));
+    //         PubSub.publish(events.WS_CONNECTED);
+    //     }, this._onWSError.bind(this));
+    // }
 
     _onWSOpen() {
         PubSub.publish(events.WS_CONNECTED);
@@ -145,7 +141,7 @@ class CommunicationService extends KCLSingleton {
     }
 
     _createFullURL(endpoint) {
-        let url = this._createUrl();
+        let url = this._createUrl(endpoint);
         let paths = this._getPathParams(endpoint.apiRoot);
         paths.forEach((p) => {
             url += '/';
