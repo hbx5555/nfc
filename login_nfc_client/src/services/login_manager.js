@@ -80,9 +80,8 @@ class LoginManager extends KCLSingleton {
 
     _subscribe(){
         PubSub.subscribe(events.WS_FAILED, () => {
-            console.log('LogginManager onconnected to WS');
             this._loginController.handleError('Failed to open web socket');
-            //this._loginController.displayCardPass('Please pass your card...', this._pin);
+            PostMessageService.instance.sendPostMessage({actionId: 'error', postData: {code:4}});
         });
         PubSub.subscribe(events.WS_CONNECTED, () => {
             console.log('LogginManager onconnected to WS');
@@ -97,13 +96,13 @@ class LoginManager extends KCLSingleton {
                 .then((res) => {
                     this._loginController.showLoading(false);
                     console.log(res);
-                    window.parent.postMessage({actionId: 'close', postData: res}, '*');
-                   // window.location = res.RedirectURL + '?' + 'access=' + res.AccessToken;
+                    PostMessageService.instance.sendPostMessage({actionId: 'success', postData: res});
                 })
                 .catch((error) => {
                     console.log('LoginManager - failed to retrieve access token');
                     this._loginController.showLoading(false);
                     this._loginController.handleError('Failed to retrieve requestId');
+                    PostMessageService.instance.sendPostMessage({actionId: 'error', postData: {code:3}});
                 })
             //TODO close WS
         });

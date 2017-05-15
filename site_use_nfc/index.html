@@ -251,16 +251,6 @@
             });
         });
 
-        function initKCL() {
-//            window.KCL.initApp();
-//
-//            window.KCL.subscribe('APPLICATION_ON_INIT', () => {
-//                console.info('Consumer, KCL application is ready!');
-//                kclInit = true;
-//                console.debug('[CONFIG] ' + JSON.stringify(config));
-//            });
-
-        }
 
         function loginWithKCL() {
 
@@ -272,18 +262,18 @@
                         break;
                     case 'error':
                         $('#iframeKCL').addClass('kcl-login-hide');
-
                         break;
-                    case 'channel':
-                        document.getElementById('webSocketForm').classList.remove("kcl-login-hide");
-                        document.getElementById('channelIDInput').value = evt.data.postData.channel;
-                        document.getElementById('btnOttResponse').disabled = false;
+                    case 'success':
+                        $('#iframeKCL').addClass('kcl-login-hide');
+                        $('#kclBtn').text('Logout');
+                        $('.intro-message h1').text('Congratulations!');
+                        $('.intro-message h3').text('You has been successfully authenticated by KeyCardLogin!');
                         break
                 }
             }, false);
 
             $('#iframeKCL').removeClass('kcl-login-hide');
-            $('#iframeKCL').attr('src', 'http://localhost:8082/kcl.html?clientId=dgshfasdfidas');
+            $('#iframeKCL').attr('src', 'http://localhost:8082/kcl.html?clientId=torez');
         }
 
     </script>
