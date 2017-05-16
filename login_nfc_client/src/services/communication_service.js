@@ -88,6 +88,7 @@ class CommunicationService extends KCLSingleton {
 
     _onWSMessage(msg) {
         console.log('WS received message');
+        console.log(msg);
         let data = JSON.parse(msg.data || msg.body);
         PubSub.publish(events.WS_MESSAGE_RECEIVED, data);
     }

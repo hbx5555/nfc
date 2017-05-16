@@ -98,6 +98,7 @@
                                 </button>
                             </li>
                         </ul>
+                        <h3 id="username" class="kcl-login-hide"></h3>
                     </div>
                 </div>
             </div>
@@ -244,12 +245,34 @@
     <iframe src="" frameborder="0" id="iframeKCL" class="kcl-login-hide" width="500px" height="500px"></iframe>
 </body>
     <script>
+        config = {
+            kclUrl: "http://localhost:8082/kcl.html",
+            clientId: "torez",
+            kclGetUsernmaeURL: "http://ec2-54-93-189-41.eu-central-1.compute.amazonaws.com:9090/kcl/api/v1/auth?token="
+        }
+        isAuthenticated = false;
+        accessToken = null;
         $(document).ready(function () {
            // initKCL();
             $('#kclBtn').on('click', () => {
-                loginWithKCL();
+                if (!accessToken) {
+                    loginWithKCL();
+                } else {
+                    getUsername();
+                }
+                
             });
         });
+        
+        
+        function getUsername() {
+            $.get(config.kclGetUsernmaeURL + accessToken, function(data ) {
+                console.log(data);
+                $('#kclBtn').text('Logout');
+                $('#username').text('Hi, ' + data.channel + '!');
+                $('#username').removeClass('kcl-login-hide');
+            });
+        }
 
 
         function loginWithKCL() {
@@ -265,15 +288,16 @@
                         break;
                     case 'success':
                         $('#iframeKCL').addClass('kcl-login-hide');
-                        $('#kclBtn').text('Logout');
+                        $('#kclBtn').text('Get Username');
                         $('.intro-message h1').text('Congratulations!');
                         $('.intro-message h3').text('You has been successfully authenticated by KeyCardLogin!');
+                        accessToken = evt.data.postData.accessToken;
                         break
                 }
             }, false);
 
             $('#iframeKCL').removeClass('kcl-login-hide');
-            $('#iframeKCL').attr('src', 'http://localhost:8082/kcl.html?clientId=torez');
+            $('#iframeKCL').attr('src', config.kclUrl + '?' + 'clientId=' + config.clientId);
         }
 
     </script>
