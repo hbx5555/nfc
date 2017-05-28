@@ -14,6 +14,7 @@ class LoginManager extends KCLSingleton {
     _pin;
     _channelID;
     _clientId;
+    _userId;
     _ott;
     _loginController;
     _isDebugMode;
@@ -35,23 +36,46 @@ class LoginManager extends KCLSingleton {
             return;
         }
 
-        this._loginController.showLoading(true, 'Sending login request...');
-        this._getLoginChannelID(this._clientId)
-            .then((res) => {
-                this._loginController.showLoading(false);
-                this._handleChannelIDResponse(res);
-            })
-            .catch((error) => {
-                console.log(error);
-                console.log('LoginManager - failed to retrieve requestId');
-                this._loginController.showLoading(false);
-                this._loginController.handleError('Failed to retrieve requestId');
-                PostMessageService.instance.sendPostMessage({actionId: 'error', postData: {code:2}});
-            })
+        if (this._userId) {
+            console.debug('Start registration new domain for user ' + this._userId);
+            this._loginController.showLoading(true, 'Sending site registration request');
+            this._getReqisterChannelID(this._clientId, this._userId)
+                .then((res) => {
+                    this._loginController.showLoading(false);
+                    this._handleChannelIDResponse(res);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    console.log('LoginManager - failed to retrieve requestId');
+                    this._loginController.showLoading(false);
+                    this._loginController.handleError('Failed to retrieve requestId');
+                    PostMessageService.instance.sendPostMessage({actionId: 'error', postData: {code:2}});
+                })
+        } else {
+            console.debug('Start login process to domain ' + this._clientId);
+            this._loginController.showLoading(true, 'Sending login request...');
+            this._getLoginChannelID(this._clientId)
+                .then((res) => {
+                    this._loginController.showLoading(false);
+                    this._handleChannelIDResponse(res);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    console.log('LoginManager - failed to retrieve requestId');
+                    this._loginController.showLoading(false);
+                    this._loginController.handleError('Failed to retrieve requestId');
+                    PostMessageService.instance.sendPostMessage({actionId: 'error', postData: {code:2}});
+                })
+        }
     }
 
     _getLoginChannelID(clientId) {
         return CommunicationService.instance.getChannel(clientId)
+    }
+
+
+    _getReqisterChannelID(clientId, userId) {
+        return CommunicationService.instance.getRegistartionChannel(clientId, userId);
     }
 
 
@@ -74,6 +98,12 @@ class LoginManager extends KCLSingleton {
             this._clientId = qs.clientId;
             isValid = true;
         }
+
+        //check if it's new site registration
+        if (isValid && qs.userId) {
+            this._userId = qs.userId;
+        }
+
         return isValid;
     }
 
