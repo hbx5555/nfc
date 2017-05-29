@@ -10,6 +10,10 @@
           "path": "auth",
           "method": "get"
         },
+        "register": {
+          "path": "register",
+          "method": "get"
+        },
         "auth": {
           "path": "token",
           "method": "get"
